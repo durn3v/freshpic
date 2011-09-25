@@ -1,0 +1,294 @@
+body {
+	font-family: Helvetica, Arial;
+	margin:0;
+}
+
+img { 
+	border: none;
+}
+.top {
+    position:fixed;
+    top:0px;
+    left:0px;
+    right:0px;
+    background:url("../images/back.png") repeat-x;
+    height:35px;
+    color:white;
+    text-align:center;
+    z-index:1;
+    }
+
+#index {
+	width: 100%;
+	margin-top: -8px;
+	margin-left: -8px;
+	padding-right: 12px;
+}
+
+#upload_box {
+	width: 50%;
+	padding-top: 8px;
+	margin-left: -8px;
+
+}
+
+#logo {
+	position:absolute;
+}
+
+#top-left {
+	width: 40%;
+	height: 200px;
+}
+
+#top-right {
+	width: 20%;
+	height: 200px;
+	padding-right: 8px;
+	padding-top: 20px;
+	margin-left: 80%;
+	margin-top: -222px;
+}
+
+#top-center {
+	padding-top: 20px;
+	width: 20%;
+	height: 200px;
+	margin-left: 40%;
+	margin-top: -202px;
+}
+
+#center {
+	width: 100%;
+	height: 300px;
+	padding-right: 16px;
+	padding-top: 10px;
+	background: url('../images/bg_center.jpg') repeat-x left ;
+}
+
+#footer {
+  position:relative;
+	width: 100%;
+	text-align:center;
+}
+
+/* IE */
+#unsupported_browser {
+	padding-top: 30px;
+	width: 100%;
+	height: 100px;
+	padding-right: 8px;
+}
+
+#unsupported_browser_inner {
+	border: 1px solid #FFEA61;
+	width: 40%;
+	height: 22px;
+	background: #FFF4AB;
+}
+/*   */
+/* No image found */
+#image_not_exist {
+    padding-top: 30px;
+	width: 100%;
+    height: 100px;
+    padding-right: 8px;
+}
+
+#image_not_exist_inner {
+    border: 1px solid #FFEA61;
+    width: 40%;
+    height: 22px;
+    background: #FFF4AB;   
+}
+/*	*/
+
+#unsupported_type_true {
+	border: 1px solid #FFEA61;
+	float: center;
+	width: 30%;
+	height: 9%;
+	background: #FFF4AB;
+	margin-top: 20px;
+}
+
+#unsupported_type_false {
+	border: 1px solid #FFFFFF;
+	float:	center;
+	width: 30%;
+	height: 9%;
+	background: #FFFFFF;
+	margin-top: 20px;
+}
+
+#form {
+	width: 40%;
+	padding-top: 10px;
+	margin-top: 37px;
+	color: #ffffff;
+}
+
+#link {
+    border: 1px solid #FFEA61;
+    width: 30%;
+    height: 9%;
+    background: #FFF4AB;
+    margin-top: 30px;
+}
+
+#imagepage {
+background: #c4c8ac;
+padding-top: 20px;
+}
+
+p#p_form {
+	margin-top: -30px;
+}
+
+p#flags {
+
+}
+
+.span_unsupported {
+	text-align: center;
+	font-weight: normal;
+	font-size: 1em;
+	font-weight: bold;
+}
+
+.span_link {
+    text-align: center;
+    font-weight: normal;
+    font-size: 1em;
+}
+
+.imagepage {
+	max-width: 700px;
+}
+
+.random_img {
+	max-width: 250px;
+	max-height: 250px;
+}
+
+/* update 
+*/
+
+/*.vis {
+	background-color: black; 
+	position: fixed; 
+	width: 100%; height:100%;
+	z-index:1;
+	display:none;
+	opacity: 0.5;
+	z-index:1;
+	margin-left: -8px;
+	text-align:center;
+}
+	*/
+#pic {
+	position:absolute;
+	left:0;
+	width:100%;
+	text-align:center;
+	background-color: white;
+	z-index:2;
+	}
+
+#close {
+	text-align:right;
+}
+	
+.sure {
+	z-index:3;
+	display:none;
+	position: absolute;
+	left:40%;
+	right:40%;
+	top:45%;
+	bottom: 45%;
+	min-width: 
+	border: 2px solid black;
+	background-color: #b0b0b0;
+	text-align: center;
+}
+
+#process {
+ display: none;
+}
+
+
+#file_input_div
+{
+    position: relative; 
+    width: 170px; 
+    height: 23px; 
+    overflow: hidden;
+}
+
+#file_input_button
+{
+    width: 170px; 
+    position: absolute; 
+    top: 0px;
+	bottom: 0px;
+    background-color: #6d8fb3;
+    color: white;
+    border: 2px solid #3b6798;
+}
+
+.file_input_hidden
+{
+    font-size: 45px; 
+    position: absolute; 
+    right: 0px; 
+    top: 0px; 
+    opacity: 0; 
+
+    filter: alpha(opacity=0); 
+    -ms-filter: "alpha(opacity=0)"; 
+    -khtml-opacity: 0; 
+    -moz-opacity: 0;
+ }
+ 
+ #submit
+ {
+ /*visibility:hidden;
+ font-size: 12px;
+ text-align: center;
+ color: white;
+ background-color: #6d8fb3;
+ border: 2px solid #3b6798;
+ height:23px;*/
+ }
+ .main {
+position:absolute;
+left:0px;
+top:35px;
+width:100%;
+}
+	.lang {
+	font-size:10;
+	text-align:center;
+	}
+.message {
+	width:400px;
+	height:60px;
+	border: solid 1px;
+	}
+	
+.unread_message {
+	width:400px;
+	height:60px;
+	background-color:#d4ddff;
+	}
+
+A.message_link:link {color:black; text-decoration:none;}
+A.message_link:visited {color:black;}
+A.message_link:active {color:black;}
+A.message_link:hover {color:black;}
+
+A.top_link:link {color:white; text-decoration:none;}
+A.top_link:visited {color:white;}
+A.top_link:active {color:white;}
+A.top_link:hover {color:white;}
