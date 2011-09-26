@@ -1,8 +1,9 @@
 <?php
-//config
+session_start();
 include("config.php");
 
-session_start();
+echo $start;
+echo $after_scripts;
 
 if(isset($_SESSION['user_id']))
 {
@@ -88,27 +89,24 @@ else
 	}
 	else
 	{
-		echo 	"<form method=\"POST\" action=\"\">";
-		$string=firstname_.$lang;
-		echo $$string.": <input type=\"text\" name=\"firstname\"><br>";
-		$string=lastname_.$lang;
-		echo $$string.": <input type=\"text\" name=\"lastname\"><br>";
-		$string=email_.$lang;
-		echo $$string.": <input type=\"text\" name=\"email\"><br>";
-		$string=password_.$lang;
-		echo $$string.": <input type=\"password\" name=\"password\"><br>";
-		$string=ver_password_.$lang;
-		echo $$string.": <input type=\"password\" name=\"ver_password\"><br>";
-		$string=sex_.$lang;
-		$m = sex_m_.$lang;
-		$f = sex_f_.$lang;
-		echo $$string.": ".$$m."<input type=\"radio\" name=\"sex\" value=\"m\"> ";
-		echo $$f."<input type=\"radio\" name=\"sex\" value=\"f\"><br>";
-	
-		echo "<input type=\"hidden\" name=\"act\">";
-		echo "<input type=\"submit\" value=\""; $string = registration_submit_.$lang; echo $$string."\">
-		</form>";
+	echo "<form method=\"POST\" action=\"join.php\">";
+        echo "<table style=\"text-align:right;\"><tr><td collspan=\"2\"><b>";
+        echo $lang['registration'];
+        echo "</b></td></tr><tr><td>";
+	echo $lang['firstname'];
+	echo ":</td><td><input type=\"text\" name=\"firstname\"></td></tr><tr><td>";
+	echo $lang['lastname'].":</td><td><input type=\"text\" name=\"lastname\"></td></tr><tr><td>";
+	echo $lang['email'].":</td><td><input type=\"text\" name=\"email\"></td></tr><tr><td>";
+	echo $lang['password'].":</td><td><input type=\"password\" name=\"password\"></td></tr><tr><td>";
+	echo $lang['ver_password'].":</td><td><input type=\"password\" name=\"ver_password\"></td></tr><tr><td>";
+	echo $lang['sex'].": ".$lang['sex_m']."<input type=\"radio\" name=\"sex\" value=\"m\">";
+	echo $lang['sex_f']."<input type=\"radio\" name=\"sex\" value=\"f\"></td></tr><tr><td>";
+
+	echo "<input type=\"hidden\" name=\"act\">";
+	echo "<input type=\"submit\" value=\"{$lang['registration']}\">
+	</form></td></tr></table>";
 	}
 }
+echo $close;
 
 ?> 
