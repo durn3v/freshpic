@@ -8,7 +8,7 @@ $result_user=pg_query($sql_from) or die(pg_last_error());
 while ($from_user = pg_fetch_array($result_user)) { return $from_user['name']." ".$from_user['lastname']; }
 }
 
-if(!isset($_GET['user'])) { header("Location: home.php?user=".$_SESSION['user_id']);}
+if(!isset($_GET['user'])) { header("Location: /".$_SESSION['user_id']);}
 
 if(isset($_GET['user']) && isset($_GET['follow'])){
 	$db->connect();
@@ -19,7 +19,7 @@ if(isset($_GET['user']) && isset($_GET['follow'])){
 		$db->action("UPDATE counts SET followers=following+1 WHERE user_id=".$_GET['user']);
 	}
 	$db->close();
-	header("Location: home.php?user={$_GET['user']}");
+	header("Location: /{$_GET['user']}");
 	exit();
 }
 if(isset($_GET['user']) && isset($_GET['unfollow'])){
@@ -28,7 +28,7 @@ if(isset($_GET['user']) && isset($_GET['unfollow'])){
 		$db->action("UPDATE counts SET following=following-1 WHERE user_id=".$_SESSION['user_id']);
 		$db->action("UPDATE counts SET followers=following-1 WHERE user_id=".$_GET['user']);	
 	$db->close();
-	header("Location: home.php?user={$_GET['user']}");
+	header("Location: /{$_GET['user']}");
 	exit();
 }
 echo $start;
@@ -85,9 +85,9 @@ if(isset($_SESSION['user_id']))
 			$db->action("SELECT * FROM followers WHERE who='".$_SESSION['user_id']."' AND whom='".$_GET['user']."'");
 			echo "<br>";
 			if(pg_num_rows($db->result)==0) {
-				echo "<a href=\"?user={$_GET['user']}&follow\">{$lang['follow']}</a>";
+				echo "<a href=\"{$_GET['user']}&follow\">{$lang['follow']}</a>";
 				} else {
-				echo $lang['following']." | <a href=\"?user={$_GET['user']}&unfollow\">{$lang['unfollow']}</a>";	
+				echo $lang['following']." | <a href=\"{$_GET['user']}&unfollow\">{$lang['unfollow']}</a>";	
 				}
 		}
 		$db->action("SELECT following FROM counts WHERE user_id=".$_GET['user']);
@@ -98,7 +98,7 @@ if(isset($_SESSION['user_id']))
 			$db->action("SELECT * FROM followers WHERE who='".$_GET['user']."'");
 			while($following_user=pg_fetch_array($db->result)) {
 			$user=user($following_user['whom']);
-			echo "<a href=\"?user={$following_user['whom']}\">$user</a>\n";
+			echo "<a href=\"{$following_user['whom']}\">$user</a>\n";
 			}
 		}
 		
@@ -110,7 +110,7 @@ if(isset($_SESSION['user_id']))
 			$db->action("SELECT * FROM followers WHERE whom='".$_GET['user']."'");
 			while($follower=pg_fetch_array($db->result)) {
 			$user=user($follower['who']);
-			echo "<a href=\"?user={$follower['who']}\">$user</a>\n";
+			echo "<a href=\"{$follower['who']}\">$user</a>\n";
 			}
 	}
 }
