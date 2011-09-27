@@ -125,7 +125,7 @@ $start="<html><head><meta http-equiv=\"Content-type\" content=\"test/html; chars
 
 if(isset($_SESSION['user_id']))
 {
-	$menu="<a class=\"top_link\" href=\"home.php\">{$lang['profile']}</a>
+	$menu="<a class=\"top_link\" href=\"{$_SESSION['user_id']}\">{$lang['profile']}</a>
 	<a class=\"top_link\" href=\"mail.php\">{$lang['messages']}<span id=\"messages\">{$new_messages}</span></a>
 	<a class=\"top_link\" href=\"home.php?act=logout\">{$lang['log_out']}</a>";
 } else {
