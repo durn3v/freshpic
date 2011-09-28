@@ -17,7 +17,7 @@ if(isset($_SESSION['user_id']))
 		if(pg_num_rows($db->result)==0){
 		$db->action("INSERT INTO followers (who,whom) VALUES (".$_SESSION['user_id'].",".$_GET['user'].")");
 		$db->action("UPDATE counts SET following=following+1 WHERE user_id=".$_SESSION['user_id']);
-		$db->action("UPDATE counts SET followers=following+1 WHERE user_id=".$_GET['user']);
+		$db->action("UPDATE counts SET followers=followers+1 WHERE user_id=".$_GET['user']);
 		}
 		$db->close();
 		header("Location: /{$_GET['user']}");
@@ -27,7 +27,7 @@ if(isset($_SESSION['user_id']))
 		$db->connect();
 		$db->action("DELETE FROM followers WHERE who='".$_SESSION['user_id']."' AND whom='".$_GET['user']."'");
 		$db->action("UPDATE counts SET following=following-1 WHERE user_id=".$_SESSION['user_id']);
-		$db->action("UPDATE counts SET followers=following-1 WHERE user_id=".$_GET['user']);	
+		$db->action("UPDATE counts SET followers=followers-1 WHERE user_id=".$_GET['user']);	
 		$db->close();
 		header("Location: /{$_GET['user']}");
 		exit();
