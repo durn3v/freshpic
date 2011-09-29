@@ -74,10 +74,10 @@ if(isset($_SESSION['user_id']))
 			{
 			$name=$user['name'];
 			$lastname=$user['lastname'];
+			$online_time=$user['online_time'];
 			}
 		}
-		$user=pg_fetch_array($db->result);
-		if($user['online_time']+30<time()) echo "online<br>";
+		if($online_time+35>time()) echo "online <br>";
 		echo $name." ".$lastname;
 		}
 		if($_GET['user']==$_SESSION['user_id'])
