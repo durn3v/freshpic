@@ -147,9 +147,9 @@ $after_scripts="</head>
 	</div><div class=\"main\">";
 
 $close= "<div class=\"lang\">
-	<a href=\"?lang=ru\">Русский</a>
-	<a href=\"?lang=en\">English</a>
-	<a href=\"?lang=de\">Deutsch</a></div>
+	<a href=\"home.php?lang=ru\">Русский</a>
+	<a href=\"home.php?lang=en\">English</a>
+	<a href=\"home.php?lang=de\">Deutsch</a></div>
 	</div></body></html>";
 
 ?>
