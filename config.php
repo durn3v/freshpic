@@ -46,7 +46,7 @@ $hostname = "freshpic.org";
 $dbhost = "localhost";
 $dbname = "freshpic";
 $dbuser = "freshpic";
-$dbpass = "ui6Uph6X";
+$dbpass = "GaopI4";
 
 class db {
 
@@ -55,7 +55,7 @@ function connect() {
 	$dbhost = "localhost";
 	$dbname = "freshpic";
 	$dbuser = "freshpic";
-	$dbpass = "ui6Uph6X";
+	$dbpass = "GaopI4";
 	$this->connect=pg_connect("host=".$dbhost." dbname=".$dbname." user=".$dbuser." password=".$dbpass);
 	}
 function action($sql) {
@@ -117,9 +117,19 @@ $start="<html><head><meta http-equiv=\"Content-type\" content=\"test/html; chars
 		}  
 		});  
 	}
+	function online()
+	{
+		$.ajax({
+			url: \"actions/user/online.php\",
+			cache: false,
+			success: function(){}
+		});
+	}
 	$(document).ready(function(){
-		new_messages();  
+		new_messages();
+		online();
 		setInterval('new_messages()',1000);  
+		setInterval('online()',30000);
 		});
 	</script>";
 
