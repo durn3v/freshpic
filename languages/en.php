@@ -10,6 +10,7 @@ $lang = array(
 	'new_messages' => "New messages!",
 	'delete' => "delete",
 	
+	'upload_profile_photo' => 'Upload a profile photo',
 	'followers' => "Followers",
 	'following_this_people' => "Following",
 	'unfollow' => "Unfollow",
