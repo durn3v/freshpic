@@ -7,6 +7,12 @@ $sql_from="SELECT * FROM users WHERE uid=".$from_id;
 $result_user=pg_query($sql_from) or die(pg_last_error());
 while ($from_user = pg_fetch_array($result_user)) { return $from_user['name']." ".$from_user['lastname']; }
 }
+function avatar($uid) {
+$sql="SELECT avatar FROM users WHERE uid={$uid}";
+$result=pg_query($sql) or die(pg_last_error());
+while($users=pg_fetch_array($result)) 
+	{return $users['avatar'];}
+}
 
 echo $start;
 echo "<script>
@@ -117,14 +123,18 @@ if(isset($_SESSION['user_id']))
 		}
 		$db->action("SELECT * FROM messages WHERE to_id='".$_SESSION['user_id']."' ORDER BY uid DESC");
 		while ($messages = pg_fetch_array($db->result)) {
-		      if($messages['read_status']=="u") {$message_style="unread_message";} else {$message_style="message";}
-		      $user=from_user($messages['from_id']);
-		      $message_id=$messages['message_id_to'];
-		      echo "<a href=\"?act=show&id=".$message_id."\" class=\"message_link\">";
-		      echo "<div class=\"{$message_style}\">{$user}<br>{$messages['message']}";
-		      //echo "<a href=\"?delete={$message_id};\">{$lang['delete']}</a>";
-		      echo "</div>";
-		      echo "</a>";
+			if($messages['read_status']=="u") {$message_style="unread_message";} else {$message_style="message";}
+			$user=from_user($messages['from_id']);
+			$message_id=$messages['message_id_to'];
+			echo "<a href=\"?act=show&id=".$message_id."\" class=\"message_link\">";
+			echo "<div class=\"{$message_style}\">";
+			echo "<table>";
+			$avatar=avatar($messages['from_id']);
+			if($avatar!="nothing") echo "<tr><td><img src=\"./i/{$avatar}\"></td>";
+			echo "<td>{$user}<br>{$messages['message']}</td></tr></table>";
+			//echo "<a href=\"?delete={$message_id};\">{$lang['delete']}</a>";
+			echo "</div>";
+			echo "</a>";
 		}
 		echo "<a href=\"?act=outbox\">{$lang['outbox']}</a><br>";
 		$db->close();
