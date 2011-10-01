@@ -86,9 +86,19 @@ $db->action("SELECT new_messages FROM counts WHERE user_id=".$_SESSION['user_id'
 $db->close();
 }
 
-$start="<html><head><meta http-equiv=\"Content-type\" content=\"test/html; charset=utf-8\">
-	<link rel=\"stylesheet\" type=\"text/css\" href=\"css/style.css\" /><script src=\"jquery.js\"></script>
-	<script>
+$start="<html><head><meta http-equiv=\"Content-type\" content=\"test/html; charset=utf-8\">";
+$after_title="<link rel=\"stylesheet\" type=\"text/css\" href=\"css/style.css\" /><script src=\"jquery.js\"></script>";
+
+if(isset($_SESSION['user_id']))
+{
+	$menu="<a class=\"top_link\" href=\"{$_SESSION['user_id']}\">{$lang['profile']}</a>
+	<a class=\"top_link\" href=\"mail.php\">{$lang['messages']}<span id=\"messages\">{$new_messages}</span></a>
+	<a class=\"top_link\" href=\"settings.php\">{$lang['settings']}</a>
+	<a class=\"top_link\" href=\"home.php?act=logout\">{$lang['log_out']}</a>";
+} else {
+	$menu="FreshPic.org";
+}
+$after_scripts="<script>
 	var messages = $(\"#messages\").html();
 	function new_messages()  
 	  {  
@@ -99,7 +109,7 @@ $start="<html><head><meta http-equiv=\"Content-type\" content=\"test/html; chars
 		      if(data==0) {
 			if(messages==data){} else {
 			$(\"#messages\").html(\"\");
-			$('title').html('{$lang['messages']}');
+			$('title').html(js_title);
 			}
 			}
 		      else {
@@ -131,20 +141,12 @@ $start="<html><head><meta http-equiv=\"Content-type\" content=\"test/html; chars
 		setInterval('new_messages()',1000);  
 		setInterval('online()',30000);
 		});
-	</script>";
-
-if(isset($_SESSION['user_id']))
-{
-	$menu="<a class=\"top_link\" href=\"{$_SESSION['user_id']}\">{$lang['profile']}</a>
-	<a class=\"top_link\" href=\"mail.php\">{$lang['messages']}<span id=\"messages\">{$new_messages}</span></a>
-	<a class=\"top_link\" href=\"home.php?act=logout\">{$lang['log_out']}</a>";
-} else {
-	$menu="FreshPic.org";
-}
-$after_scripts="</head>
+</script></head>
 	<body><div class=\"top\">
 	{$menu}
 	</div><div class=\"main\">";
+
+
 
 $close= "<div class=\"lang\">
 	<a href=\"&lang=ru\">Русский</a>

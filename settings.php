@@ -58,6 +58,7 @@ echo "<style>
 
 .imgareaselect-selection {  
 }</style>";
+echo $after_title;
 echo "<script type=\"text/javascript\" src=\"jquery.imgareaselect.pack.js\"></script>";
 echo "<script type=\"text/javascript\">
 function preview(img, selection) {
@@ -200,13 +201,13 @@ if($_FILES['pic']['name'])
 		echo "<input type=\"hidden\" id=\"y1\" name=\"y1\">";
 		echo "<input type=\"hidden\" id=\"y2\" name=\"y2\">";
 		echo "<input type=\"hidden\" name=\"name\" value=\"{$name}\">";
-		echo "<br><input type=\"submit\" value=\"save\">";
+		echo "<br><input type=\"submit\" value=\"{$lang['save']}\">";
 		echo "</form>";
 	
 }
 
 	echo 	"<form enctype=\"multipart/form-data\" method=\"POST\">
-		{$lang['upload_profile_photo']} <input type=\"file\" name=\"pic\">
+		{$lang['upload_profile_photo']}<br><input type=\"file\" name=\"pic\">
 		<input type=\"submit\" value=\"{$lang['submit']}\">
 		</form>";
 

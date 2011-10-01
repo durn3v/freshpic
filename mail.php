@@ -15,7 +15,10 @@ while($users=pg_fetch_array($result))
 }
 
 echo $start;
+echo "<title>{$lang['messages']}</title>";
+echo $after_title;
 echo "<script>
+var js_title='{$lang['messages']}';
         $(document).ready(function(){  
           
             $('#send').submit(function(){  
@@ -33,7 +36,6 @@ echo "<script>
  
         });  
 </script>";
-echo "<title>{$lang['messages']}</title>";
 echo $after_scripts;
 
 if(isset($_SESSION['user_id']))
@@ -108,7 +110,13 @@ if(isset($_SESSION['user_id']))
 		$db->action("SELECT * FROM messages WHERE from_id='".$_SESSION['user_id']."' ORDER BY uid DESC");
 		while ($messages = pg_fetch_array($db->result)) {
 		      $user=from_user($messages['to_id']);
-		      echo "<a href=\"?act=show&id=".$messages['message_id_from']."&out\"><div class=\"message\">to: ".$user." ".$messages['message']."</div></a>";
+		      $avatar=avatar($messages['to_id']);
+		      echo "<a href=\"?act=show&id=".$messages['message_id_from']."&out\">";
+		      echo "<div class=\"message\">";
+		      echo "<table><tr><td width=\"50\">";
+		      if($avatar!="nothing") echo "<img src=\"./i/{$avatar}\">";
+		      echo "</td><td>{$user}<br>{$messages['message']}</td></tr></table>";
+		      echo "</div></a>";
 		}
 		echo "<a href=\"?\">{$lang['inbox']}</a><br>";
 		$db->close();
@@ -128,10 +136,10 @@ if(isset($_SESSION['user_id']))
 			$message_id=$messages['message_id_to'];
 			echo "<a href=\"?act=show&id=".$message_id."\" class=\"message_link\">";
 			echo "<div class=\"{$message_style}\">";
-			echo "<table>";
+			echo "<table><tr><td width=\"50\">";
 			$avatar=avatar($messages['from_id']);
-			if($avatar!="nothing") echo "<tr><td><img src=\"./i/{$avatar}\"></td>";
-			echo "<td>{$user}<br>{$messages['message']}</td></tr></table>";
+			if($avatar!="nothing") echo "<img src=\"./i/{$avatar}\">";
+			echo "</td><td>{$user}<br>{$messages['message']}</td></tr></table>";
 			//echo "<a href=\"?delete={$message_id};\">{$lang['delete']}</a>";
 			echo "</div>";
 			echo "</a>";

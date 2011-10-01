@@ -61,6 +61,7 @@ function stop(result, link, url, description, little) {
 
 $image_request = '0';
 
+echo $after_title;
 echo $after_scripts;
 
 echo @'<div id="index">

@@ -35,6 +35,8 @@ if(isset($_SESSION['user_id']))
 }
 echo $start;
 echo "<title>Home</title>";
+echo $after_title;
+echo "<script>var js_title='Home';</script>";
 echo $after_scripts;
 if(isset($_POST['email']) && isset($_POST['pass']))
 {

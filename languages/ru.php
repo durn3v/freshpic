@@ -10,6 +10,8 @@ $lang = array(
 	'new_messages' => "Новые сообщения!",
 	'delete' => "Удалить",
 
+	'save' => 'Сохранить',
+	'settings' => 'Настройки',
 	'upload_profile_photo' => 'Загрузить фотографию на профиль',
 	'followers' => "Наблюдают",
 	'following_this_people' => "Наблюдает",
