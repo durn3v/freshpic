@@ -2,11 +2,23 @@
 session_start();
 include("config.php");
 
+if($_FILES['pic']['name']) {
+	if(is_uploaded_file($_FILES["pic"]["tmp_name"]))
+	{
+		$db->connect();
+		$db->action("SELECT images FROM counts WHERE user_id={$_SESSION['user_id']}");
+		while($images=pg_fetch_array($db->result)) $uid=$images['images']+1;
+		$db->action("UPDATE counts SET images='{$uid}' WHERE user_id={$_SESSION['user_id']}");
+		$db->close();
+		$name = chr( rand(97, 122) ).chr( rand(97, 122) ).chr( rand(97, 122) ).chr( rand(97, 122) ).$uid.".jpg";
+		move_uploaded_file($_FILES["pic"]["tmp_name"], "./p/{$name}");
+		imageresize("./s/{$name}","./p/{$name}",200,400,90, $_FILES["pic"]["type"]);
+		list($width, $height, $type) = getimagesize("./s/{$name}");
+	}
+}
+
 echo $start;
 echo "<style>
-/*
- * imgAreaSelect default style
- */
 
 .imgareaselect-border1 {
 	background: url(border-v.gif) repeat-y left top;
@@ -48,15 +60,13 @@ echo "<style>
 echo "<script type=\"text/javascript\" src=\"jquery.imgareaselect.pack.js\"></script>";
 echo "<script type=\"text/javascript\">
 function preview(img, selection) {
-    if (!selection.width || !selection.height)
-        return;
-    
-    var scaleX = 100 / selection.width;
-    var scaleY = 100 / selection.height;
+
+    var scaleX = 50 / selection.width;
+    var scaleY = 50 / selection.height;
 
     $('#preview img').css({
-        width: Math.round(scaleX * 300),
-        height: Math.round(scaleY * 300),
+        width: Math.round(scaleX * {$width}),
+        height: Math.round(scaleY * {$height}),
         marginLeft: -Math.round(scaleX * selection.x1),
         marginTop: -Math.round(scaleY * selection.y1)
     });
@@ -71,7 +81,7 @@ function preview(img, selection) {
 
 $(document).ready(function () {
     $('#photo').imgAreaSelect({ aspectRatio: '1:1', handles: true,
-        fadeSpeed: 200, onSelectChange: preview, x1: 0, y1: 0, x2: 100, y2: 100, minWidth: 50, minHeight: 50,});
+        fadeSpeed: 200, onInit: preview, onSelectChange: preview, x1: 0, y1: 0, x2: 100, y2: 100, minWidth: 50, minHeight: 50,});
 });</script>";
 
 echo $after_scripts;
@@ -178,18 +188,11 @@ echo "<img src=\"./i/{$_POST['name']}\">";
 
 if($_FILES['pic']['name'])
 {
-	if(is_uploaded_file($_FILES["pic"]["tmp_name"]))
-	{
-		$db->connect();
-		$db->action("SELECT images FROM counts WHERE user_id={$_SESSION['user_id']}");
-		while($images=pg_fetch_array($db->result)) $uid=$images['images']+1;
-		$db->action("UPDATE counts SET images='{$uid}' WHERE user_id={$_SESSION['user_id']}");
-		$db->close();
-		$name = chr( rand(97, 122) ).chr( rand(97, 122) ).chr( rand(97, 122) ).chr( rand(97, 122) ).$uid.".jpg";
-		move_uploaded_file($_FILES["pic"]["tmp_name"], "./p/{$name}");
-		imageresize("./s/{$name}","./p/{$name}",200,400,90, $_FILES["pic"]["type"]);
-		echo "";
+	
 		echo "<img id=\"photo\" src=\"./s/{$name}\">";
+		echo "<div id=\"preview\" style=\"width:50px; height:50px; overflow: hidden;\">
+		<img src=\"./s/{$name}\">
+		</div>";
 		echo "<form method=\"POST\">";
 		echo "<input type=\"hidden\" id=\"x1\" name=\"x1\">";
 		echo "<input type=\"hidden\" id=\"x2\" name=\"x2\">";
@@ -198,10 +201,8 @@ if($_FILES['pic']['name'])
 		echo "<input type=\"hidden\" name=\"name\" value=\"{$name}\">";
 		echo "<br><input type=\"submit\" value=\"save\">";
 		echo "</form>";
-	}
-
+	
 }
-
 
 	echo 	"<form enctype=\"multipart/form-data\" method=\"POST\">
 		{$lang['upload_profile_photo']} <input type=\"file\" name=\"pic\">
