@@ -75,9 +75,11 @@ if(isset($_SESSION['user_id']))
 			$name=$user['name'];
 			$lastname=$user['lastname'];
 			$online_time=$user['online_time'];
+			$avatar=$user['avatar'];
 			}
 		}
 		if($online_time+35>time()) echo "online <br>";
+		echo "<img src=\"./s/{$avatar}\"><br>";
 		echo $name." ".$lastname;
 		}
 		if($_GET['user']==$_SESSION['user_id'])

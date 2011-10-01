@@ -9,8 +9,9 @@ if($_FILES['pic']['name']) {
 		$db->action("SELECT images FROM counts WHERE user_id={$_SESSION['user_id']}");
 		while($images=pg_fetch_array($db->result)) $uid=$images['images']+1;
 		$db->action("UPDATE counts SET images='{$uid}' WHERE user_id={$_SESSION['user_id']}");
-		$db->close();
 		$name = chr( rand(97, 122) ).chr( rand(97, 122) ).chr( rand(97, 122) ).chr( rand(97, 122) ).$uid.".jpg";
+		$db->action("UPDATE users SET avatar='{$name}' WHERE uid={$_SESSION['user_id']}");
+		$db->close();
 		move_uploaded_file($_FILES["pic"]["tmp_name"], "./p/{$name}");
 		imageresize("./s/{$name}","./p/{$name}",200,400,90, $_FILES["pic"]["type"]);
 		list($width, $height, $type) = getimagesize("./s/{$name}");
