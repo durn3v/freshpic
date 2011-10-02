@@ -9,7 +9,15 @@ $lang = array(
 	'new_message' => "New message!",
 	'new_messages' => "New messages!",
 	'delete' => "delete",
-
+#			#
+#	Albums		#
+#			# 
+	'albums' => 'Albums',
+	'new_album' => 'Create new album',
+	'no_albums' => 'No albums',
+	'name_album' => 'Name of album',
+	'upload_some_photos' => 'Upload some photos',
+	
 	'save' => 'Save',
 	'settings' => 'Settings',
 	'upload_profile_photo' => 'Upload a profile photo',

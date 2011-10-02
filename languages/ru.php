@@ -9,7 +9,15 @@ $lang = array(
 	'new_message' => "Новое сообщение!",
 	'new_messages' => "Новые сообщения!",
 	'delete' => "Удалить",
-
+#			#
+#	Albums		#
+#			#
+	'albums' => 'Альбомы',
+	'new_album' => 'Создать новый альбом',
+	'no_albums' => 'Нет альбомов',
+	'name_album' => 'Название',
+	'upload_some_photos' => 'Загрузите фотографии',
+	
 	'save' => 'Сохранить',
 	'settings' => 'Настройки',
 	'upload_profile_photo' => 'Загрузить фотографию на профиль',
