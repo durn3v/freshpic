@@ -2,14 +2,16 @@
 session_start();
 include("config.php");
 
-if(!isset($_GET['act']) and !isset($_GET['user']) and isset($_SESSION['user_id']) and !isset($_GET['name']))
+if(!isset($_GET['act']) and !isset($_GET['user']) and !isset($_FILES['pic']) and isset($_SESSION['user_id']))
 {
 Header("Location: albums.php?user={$_SESSION['user_id']}");
 }
 
 echo $start;
+echo "<title>{$lang['albums']}</title>";
 echo $after_title;
 echo "<script>
+var js_title='{$lang['albums']}';
       $(document).ready(function(){
       var i = $('input').size() + 1;
 	
@@ -67,12 +69,13 @@ function imageresize($outfile,$infile,$neww,$newh,$quality,$type)
 if(isset($_SESSION['user_id']))
 {
 
-if(isset($_GET['user']) and !isset($_GET['act']))
+if(isset($_GET['user']))
 {
 	if(!isset($_GET['album']))
 	{
 		$db->connect();
 		$db->action("SELECT * FROM albums WHERE user_id={$_GET['user']}");
+		echo "<table>";
 		if(pg_num_rows($db->result)==0)
 		{
 			echo "{$lang['no_albums']}";
@@ -82,9 +85,11 @@ if(isset($_GET['user']) and !isset($_GET['act']))
 			$name=$album['name'];
 			$album_id=$album['album_id'];
 			$count=$album['count'];
-			echo "<a href=\"?user={$_GET['user']}&album={$album_id}\">{$name}</a><br>";
+			$cover=$album['cover'];
+			echo "<tr><td><a href=\"?user={$_GET['user']}&album={$album_id}\"><img src=\"./i/{$cover}\"></a></td><td><a href=\"?user={$_GET['user']}&album={$album_id}\">{$name}</a></td></tr>";
 			}
 		}
+		echo "</table>";
 		$db->close();
 	} else {
 		$db->connect();
@@ -95,33 +100,37 @@ if(isset($_GET['user']) and !isset($_GET['act']))
 		}
 		$db->close();
 	}
-}
-if($_FILES['pic'])
+} else {
+	if($_FILES['pic'])
 	{
-	$db->connect();
-	$db->action("SELECT count FROM albums WHERE user_id={$_SESSION['user_id']}");
-	while($albums=pg_fetch_array($db->result)) $count=$albums['count'];
-	foreach($_FILES['pic']['tmp_name'] as $file) {
-		if(is_uploaded_file($file))
+		$db->connect();
+		$db->action("SELECT count FROM albums WHERE user_id={$_SESSION['user_id']}");
+		while($albums=pg_fetch_array($db->result)) $count=$albums['count'];
+		$i=1;
+		foreach($_FILES['pic']['tmp_name'] as $file) 
 		{
-		$db->action("SELECT images FROM counts WHERE user_id={$_SESSION['user_id']}");
-		while($images=pg_fetch_array($db->result)) $uid=$images['images']+1;
-		$db->action("UPDATE counts SET images='{$uid}' WHERE user_id={$_SESSION['user_id']}");
-		$name = chr( rand(97, 122) ).chr( rand(97, 122) ).chr( rand(97, 122) ).chr( rand(97, 122) ).$uid.".jpg";
-		$db->action("INSERT INTO images (user_id,album_id,name) VALUES ({$_SESSION['user_id']}, {$_POST['album_id']}, '{$name}');");
-		move_uploaded_file($file, "./p/{$name}");
-		imageresize("./i/{$name}","./p/{$name}",100,100,90, "image/jpeg");
-		imageresize("./s/{$name}","./p/{$name}",800,600,90, "image/jpeg");
-		list($width, $height, $type) = getimagesize("./s/{$name}");
-		echo "<img src=\"./i/{$name}\">";
-		$count++;
+			if(is_uploaded_file($file))
+			{
+				$db->action("SELECT images FROM counts WHERE user_id={$_SESSION['user_id']}");
+				while($images=pg_fetch_array($db->result)) $uid=$images['images']+1;
+				$db->action("UPDATE counts SET images='{$uid}' WHERE user_id={$_SESSION['user_id']}");
+				$name = chr( rand(97, 122) ).chr( rand(97, 122) ).chr( rand(97, 122) ).chr( rand(97, 122) ).		$uid.".jpg";
+				if($i==1) $db->action("UPDATE albums SET cover='{$name}' WHERE user_id={$_SESSION['user_id']} AND album_id={$_POST['album_id']}");
+				$db->action("INSERT INTO images (user_id,album_id,name) VALUES ({$_SESSION['user_id']}, {$_POST['album_id']}, '{$name}');");
+				move_uploaded_file($file, "./p/{$name}");
+				imageresize("./i/{$name}","./p/{$name}",100,100,90, "image/jpeg");
+				imageresize("./s/{$name}","./p/{$name}",800,600,90, "image/jpeg");
+				//list($width, $height, $type) = getimagesize("./s/{$name}");
+				echo "<img src=\"./i/{$name}\">";
+				$count++;
+				$i=0;
+			}
 		}
-		}
-	$db->action("UPDATE albums SET count={$count} WHERE user_id={$_SESSION['user_id']} AND album_id={$_POST['album_id']}");
-	$db->close();
+		$db->action("UPDATE albums SET count={$count} WHERE user_id={$_SESSION['user_id']} AND album_id={$_POST['album_id']}");
+		$db->close();
 		
 	} 
-	if(isset($_GET['name']) and isset($_GET['description']))
+	if(isset($_POST['name']) and isset($_POST['description']))
 	{
 		$db->connect();
 		$db->action("SELECT albums FROM counts WHERE user_id={$_SESSION['user_id']}");
@@ -129,12 +138,12 @@ if($_FILES['pic'])
 		{
 			$album_id=$counts['albums']+1;
 		}
-		$db->action("INSERT INTO albums (user_id,name,description,album_id) VALUES ({$_SESSION['user_id']},'{$_GET['name']}','{$_GET['description']}',{$album_id});");
+		$db->action("INSERT INTO albums (user_id,name,description,album_id) VALUES ({$_SESSION['user_id']},'{$_POST['name']}','{$_POST['description']}',{$album_id});");
 		$db->action("UPDATE counts SET albums={$album_id}");
 		$db->close();
 		echo "{$_GET['name']}<br>";
 		echo "{$lang['upload_some_photos']}:<br>";
-		echo "<form  method=\"POST\" enctype=\"multipart/form-data\" action=\"\">";
+		echo "<form  method=\"POST\" enctype=\"multipart/form-data\" action=\"albums.php\">";
 		echo "<div class=\"inputs\">";
 		echo "<input type=\"file\" name=\"pic[]\"><br>";
 		echo "</div>";
@@ -144,18 +153,18 @@ if($_FILES['pic'])
 		echo "</form>";
 	}
 
-if(isset($_GET['act']) and $_GET['act']=="new")
-{
-	echo "<form method=\"GET\" action=\"albums.php?act=new\">";
-	echo "{$lang['name_album']}: <input type=\"text\" name=\"name\"><br>";
-	echo "{$lang['description']}: <input type=\"text\" name=\"description\"><br>";
-	echo "<input type=\"submit\" value=\"{$lang['save']}\">";
-	echo "</form>";
+	if($_GET['act']=="new" and !isset($_POST['name']))
+	{
+		echo "<form method=\"POST\" action=\"albums.php?act=new\">";
+		echo "{$lang['name_album']}: <input type=\"text\" name=\"name\"><br>";
+		echo "{$lang['description']}: <input type=\"text\" name=\"description\"><br>";
+		echo "<input type=\"submit\" value=\"{$lang['save']}\">";
+		echo "</form>";
+	}
 }
-
 if($_GET['user']==$_SESSION['user_id'])
 {
-echo "<a href=\"?act=new\">{$lang['new_album']}</a><br>";
+	echo "<a href=\"?act=new\">{$lang['new_album']}</a><br>";
 }
 }
 

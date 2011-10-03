@@ -6,6 +6,32 @@ body {
 img { 
 	border: none;
 }
+
+input[type="text"]{
+	border:1px solid #ccc;
+	padding:5px;
+	font-size:14px;
+	width:200px;
+	}
+input[type="password"]{
+	border:1px solid #ccc;
+	padding:5px;
+	font-size:14px;
+	width:200px;
+	}
+input[type="submit"]{
+	border:1px solid #ccc;
+	padding:5px;
+	font-size:14px;
+	min-width:100px;
+	}
+input[type="file"]{
+	border:1px solid #ccc;
+	padding:5px;
+	font-size:14px;
+	min-width:100px;
+	}
+
 .top {
     position:fixed;
     top:0px;
