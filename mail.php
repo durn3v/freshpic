@@ -34,7 +34,29 @@ var js_title='{$lang['messages']}';
                 return false;  
             });  
  
-        });  
+        });
+
+$(document).ready(function(){
+$(window).scroll(function(){
+if ($(window).scrollTop() == $(document).height() - $(window).height()){
+upd();
+}
+});
+nextPage=1;
+function upd() 
+{ 
+$.ajax({
+type: \"GET\",
+url: \"/actions/messages/messages.php?page=\" + nextPage,
+cache: false,
+success: function(html){
+$(\"#mail\").append(html);
+}
+});
+nextPage++;
+};
+upd();
+});
 </script>";
 echo $after_scripts;
 
@@ -129,21 +151,7 @@ if(isset($_SESSION['user_id']))
 		$db->action("DELETE FROM messages WHERE to_id=".$_SESSION['user_id']." AND message_id_to=".$_GET['delete']);
 		header("Location: mail.php");
 		}
-		$db->action("SELECT * FROM messages WHERE to_id='".$_SESSION['user_id']."' ORDER BY uid DESC");
-		while ($messages = pg_fetch_array($db->result)) {
-			if($messages['read_status']=="u") {$message_style="unread_message";} else {$message_style="message";}
-			$user=from_user($messages['from_id']);
-			$message_id=$messages['message_id_to'];
-			echo "<a href=\"?act=show&id=".$message_id."\" class=\"message_link\">";
-			echo "<div class=\"{$message_style}\">";
-			echo "<table><tr><td width=\"50\">";
-			$avatar=avatar($messages['from_id']);
-			if($avatar!="nothing") echo "<img src=\"./i/{$avatar}\">";
-			echo "</td><td>{$user}<br>{$messages['message']}</td></tr></table>";
-			//echo "<a href=\"?delete={$message_id};\">{$lang['delete']}</a>";
-			echo "</div>";
-			echo "</a>";
-		}
+		echo "<div id=\"mail\"></div>";
 		echo "<a href=\"?act=outbox\">{$lang['outbox']}</a><br>";
 		$db->close();
 	endswitch;

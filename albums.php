@@ -94,9 +94,12 @@ if(isset($_GET['user']))
 	} else {
 		$db->connect();
 		$db->action("SELECT name FROM images WHERE user_id={$_GET['user']} AND album_id={$_GET['album']}");
+		$i=0;
 		while($images=pg_fetch_array($db->result))
 		{
+		if($i % 4 === 0) echo "<br>";
 			echo "<img src=\"./i/{$images['name']}\">";
+			$i++;
 		}
 		$db->close();
 	}
@@ -116,14 +119,14 @@ if(isset($_GET['user']))
 				$db->action("UPDATE counts SET images='{$uid}' WHERE user_id={$_SESSION['user_id']}");
 				$name = chr( rand(97, 122) ).chr( rand(97, 122) ).chr( rand(97, 122) ).chr( rand(97, 122) ).		$uid.".jpg";
 				if($i==1) $db->action("UPDATE albums SET cover='{$name}' WHERE user_id={$_SESSION['user_id']} AND album_id={$_POST['album_id']}");
-				$db->action("INSERT INTO images (user_id,album_id,name) VALUES ({$_SESSION['user_id']}, {$_POST['album_id']}, '{$name}');");
+				$db->action("INSERT INTO images (user_id,album_id,name,seq) VALUES ({$_SESSION['user_id']}, {$_POST['album_id']}, '{$name}', {$i});");
 				move_uploaded_file($file, "./p/{$name}");
 				imageresize("./i/{$name}","./p/{$name}",100,100,90, "image/jpeg");
 				imageresize("./s/{$name}","./p/{$name}",800,600,90, "image/jpeg");
 				//list($width, $height, $type) = getimagesize("./s/{$name}");
 				echo "<img src=\"./i/{$name}\">";
 				$count++;
-				$i=0;
+				$i++;
 			}
 		}
 		$db->action("UPDATE albums SET count={$count} WHERE user_id={$_SESSION['user_id']} AND album_id={$_POST['album_id']}");
@@ -145,7 +148,7 @@ if(isset($_GET['user']))
 		echo "{$lang['upload_some_photos']}:<br>";
 		echo "<form  method=\"POST\" enctype=\"multipart/form-data\" action=\"albums.php\">";
 		echo "<div class=\"inputs\">";
-		echo "<input type=\"file\" name=\"pic[]\"><br>";
+		echo "<input type=\"file\" name=\"pic[]\" multiple=\"true\"><br>";
 		echo "</div>";
 		echo "<a href=\"#\" id=\"add\">add input</a><br>";
 		echo "<input type=\"submit\" value=\"{$lang['submit']}\">";
