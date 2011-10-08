@@ -12,9 +12,9 @@ if($_FILES['pic']['name']) {
 		$name = chr( rand(97, 122) ).chr( rand(97, 122) ).chr( rand(97, 122) ).chr( rand(97, 122) ).$uid.".jpg";
 		$db->action("UPDATE users SET avatar='{$name}' WHERE uid={$_SESSION['user_id']}");
 		$db->close();
-		move_uploaded_file($_FILES["pic"]["tmp_name"], "./p/{$name}");
-		imageresize("./s/{$name}","./p/{$name}",200,400,90, $_FILES["pic"]["type"]);
-		list($width, $height, $type) = getimagesize("./s/{$name}");
+		move_uploaded_file($_FILES["pic"]["tmp_name"], "./p/{$_SESSION['user_id']}/{$name}");
+		imageresize("./s/{$_SESSION['user_id']}/{$name}","./p/{$_SESSION['user_id']}/{$name}",200,400,90, $_FILES["pic"]["type"]);
+		list($width, $height, $type) = getimagesize("./s/{$_SESSION['user_id']}/{$name}");
 	}
 }
 
@@ -182,18 +182,18 @@ $x1=$_POST['x1'];
 $y1=$_POST['y1'];
 $x2=$_POST['x2'];
 $y2=$_POST['y2'];
-crop("./s/{$_POST['name']}", "./i/{$_POST['name']}", array($x1,$y1,$x2,$y2));
-imageresize("./i/{$_POST['name']}","./i/{$_POST['name']}",50,50,100, "image/jpeg");
-echo "<img src=\"./s/{$_POST['name']}\"><br>";
-echo "<img src=\"./i/{$_POST['name']}\">";
+crop("./s/{$_SESSION['user_id']}/{$_POST['name']}", "./i/{$_SESSION['user_id']}/{$_POST['name']}", array($x1,$y1,$x2,$y2));
+imageresize("./i/{$_SESSION['user_id']}/{$_POST['name']}","./i/{$_SESSION['user_id']}/{$_POST['name']}",50,50,100, "image/jpeg");
+echo "<img src=\"./s/{$_SESSION['user_id']}/{$_POST['name']}\"><br>";
+echo "<img src=\"./i/{$_SESSION['user_id']}/{$_POST['name']}\">";
 }
 
 if($_FILES['pic']['name'])
 {
 	
-		echo "<img id=\"photo\" src=\"./s/{$name}\">";
+		echo "<img id=\"photo\" src=\"./s/{$_SESSION['user_id']}/{$name}\">";
 		echo "<div id=\"preview\" style=\"width:50px; height:50px; overflow: hidden;\">
-		<img src=\"./s/{$name}\">
+		<img src=\"./s/{$_SESSION['user_id']}/{$name}\">
 		</div>";
 		echo "<form method=\"POST\">";
 		echo "<input type=\"hidden\" id=\"x1\" name=\"x1\">";

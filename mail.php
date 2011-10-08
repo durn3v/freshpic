@@ -33,10 +33,7 @@ var js_title='{$lang['messages']}';
                 });  
                 return false;  
             });  
- 
-        });
 
-$(document).ready(function(){
 $(window).scroll(function(){
 if ($(window).scrollTop() == $(document).height() - $(window).height()){
 upd();

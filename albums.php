@@ -9,17 +9,59 @@ Header("Location: albums.php?user={$_SESSION['user_id']}");
 
 echo $start;
 echo "<title>{$lang['albums']}</title>";
+echo "<style>
+
+</style>";
 echo $after_title;
 echo "<script>
-var js_title='{$lang['albums']}';
-      $(document).ready(function(){
-      var i = $('input').size() + 1;
+function view(image) {";
+if(isset($_GET['album']))
+{
+$db->connect();
+		$db->action("SELECT name FROM images WHERE user_id={$_GET['user']} AND album_id={$_GET['album']}");
+		$i=0;
+		while($images=pg_fetch_array($db->result))
+		{
+			$image[]=$images['name'];
+			$i++;
+		}
+		
+		echo "var next = new Array();";
+		for($x=1; $x<=$i; $x++)
+		{
+			$back=$x-1;
+			if($x==$i)
+			{
+				echo "next['{$_GET['user']}/{$image[$back]}'] = '{$image[0]}';";
+			} else
+			{
+				echo "next['{$_GET['user']}/{$image[$back]}'] = '{$image[$x]}';";
+			}
+		}
+}
+echo "	$('#vis').css('display','inline');
+	$('#view').css('display','inline');
+	$('#view').html('<a href=\"#!{$_GET['user']}/'+next[image]+'\"><img src=./p/'+image+' /></a>');
+	}
+	var js_title='{$lang['albums']}';
+	$(document).ready(function(){
+	var i = $('input').size() + 1;
 	
 	$('#add').click(function() {
 		$('<input type=\"file\" name=\"pic[]\"><br>').fadeIn('fast').appendTo('.inputs');
 		i++;
-	});});</script>";
+	});
+	if(window.location.hash)
+	{
+		view(location.hash.replace('#!',''));
+	}
+	});
+$(window).bind('hashchange', function() { 
+   if(window.location.hash) view(window.location.hash.replace('#!',''));
+}); 
+	</script>";
 echo $after_scripts;
+echo "<div id=\"vis\" onclick=\"$('#vis').css('display','none'); $('#view').css('display','none'); location.href='#';\"></div>";
 
 function imageresize($outfile,$infile,$neww,$newh,$quality,$type)
 	{
@@ -86,21 +128,21 @@ if(isset($_GET['user']))
 			$album_id=$album['album_id'];
 			$count=$album['count'];
 			$cover=$album['cover'];
-			echo "<tr><td><a href=\"?user={$_GET['user']}&album={$album_id}\"><img src=\"./i/{$cover}\"></a></td><td><a href=\"?user={$_GET['user']}&album={$album_id}\">{$name}</a></td></tr>";
+			echo "<tr><td><a href=\"?user={$_GET['user']}&album={$album_id}\"><img src=\"./i/{$_GET['user']}/{$cover}\"></a></td><td><a href=\"?user={$_GET['user']}&album={$album_id}\">{$name}</a></td></tr>";
 			}
 		}
 		echo "</table>";
 		$db->close();
 	} else {
-		$db->connect();
-		$db->action("SELECT name FROM images WHERE user_id={$_GET['user']} AND album_id={$_GET['album']}");
-		$i=0;
-		while($images=pg_fetch_array($db->result))
+		
+		//////////////////////////////
+		for($x=0; $x<$i; $x++)
 		{
-		if($i % 4 === 0) echo "<br>";
-			echo "<img src=\"./i/{$images['name']}\">";
-			$i++;
+		if($x % 4 === 0) echo "<br>";
+			echo "<a href=\"#!{$_GET['user']}/{$image[$x]}\"><img src=\"./i/{$_GET['user']}/{$image[$x]}\"></a>";
 		}
+		
+		echo "<div id=\"view\"></div>";
 		$db->close();
 	}
 } else {
@@ -120,11 +162,11 @@ if(isset($_GET['user']))
 				$name = chr( rand(97, 122) ).chr( rand(97, 122) ).chr( rand(97, 122) ).chr( rand(97, 122) ).		$uid.".jpg";
 				if($i==1) $db->action("UPDATE albums SET cover='{$name}' WHERE user_id={$_SESSION['user_id']} AND album_id={$_POST['album_id']}");
 				$db->action("INSERT INTO images (user_id,album_id,name,seq) VALUES ({$_SESSION['user_id']}, {$_POST['album_id']}, '{$name}', {$i});");
-				move_uploaded_file($file, "./p/{$name}");
-				imageresize("./i/{$name}","./p/{$name}",100,100,90, "image/jpeg");
-				imageresize("./s/{$name}","./p/{$name}",800,600,90, "image/jpeg");
+				move_uploaded_file($file, "./p/{$_SESSION['user_id']}/{$name}");
+				imageresize("./i/{$_SESSION['user_id']}/{$name}","./p/{$_SESSION['user_id']}/{$name}",100,100,90, "image/jpeg");
+				imageresize("./s/{$_SESSION['user_id']}/{$name}","./p/{$_SESSION['user_id']}/{$name}",800,600,90, "image/jpeg");
 				//list($width, $height, $type) = getimagesize("./s/{$name}");
-				echo "<img src=\"./i/{$name}\">";
+				echo "<img src=\"./i/{$_SESSION['user_id']}/{$name}\">";
 				$count++;
 				$i++;
 			}

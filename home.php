@@ -36,7 +36,30 @@ if(isset($_SESSION['user_id']))
 echo $start;
 echo "<title>Home</title>";
 echo $after_title;
-echo "<script>var js_title='Home';</script>";
+echo "<script>var js_title='Home';
+$(document).ready(function(){ 
+function wall()
+	{
+		$.ajax({
+			url: \"actions/wall/wall.php\",
+			cache: false,
+			success: function(html) {
+			$(\"#wall\").html(html);
+			}
+		});
+	}
+$('#send').submit(function(){  
+                $.ajax({  
+                    type: \"POST\",  
+                    url: \"/actions/wall/send.php\",  
+                    data: \"message=\"+$(\"#message\").val(),  
+                    success: function(html){
+                    $(\"#content\").html(html);
+                    wall();
+                    }  
+                });  
+                return false;  
+            }); });</script>";
 echo $after_scripts;
 if(isset($_POST['email']) && isset($_POST['pass']))
 {
@@ -80,8 +103,9 @@ if(isset($_SESSION['user_id']))
 			$avatar=$user['avatar'];
 			}
 		}
+		echo "<div style=\"top:0px; width:250px;\">";
 		if($online_time+35>time()) echo "online <br>";
-		if($avatar!="nothing") echo "<img src=\"./s/{$avatar}\"><br>";
+		if($avatar!="nothing") echo "<img src=\"./s/{$_GET['user']}/{$avatar}\"><br>";
 		echo $name." ".$lastname;
 		}
 		if($_GET['user']==$_SESSION['user_id'])
@@ -112,15 +136,33 @@ if(isset($_SESSION['user_id']))
 		
 		$db->action("SELECT followers FROM counts WHERE user_id=".$_GET['user']);
 		$followers=pg_fetch_array($db->result);
-		if($followers['followers']>0) {
+		if($followers['followers']>0) 
+		{
 			echo "<br>".$lang['followers'];
 			echo " ".$followers['followers']. " :";
 			$db->action("SELECT * FROM followers WHERE whom='".$_GET['user']."'");
-			while($follower=pg_fetch_array($db->result)) {
-			$user=user($follower['who']);
-			echo "<a href=\"{$follower['who']}\">$user</a>\n";
+			while($follower=pg_fetch_array($db->result)) 
+			{
+				$user=user($follower['who']);
+				echo "<a href=\"{$follower['who']}\">$user</a>\n";
 			}
-	}
+		}
+		echo "</div><div style=\"position: absolute; top:0px; left:250px;\">";
+		if($_GET['user']==$_SESSION['user_id'])
+		{
+			echo "What's up:<br><form id=\"send\"><textarea id=\"message\" rows=\"2\" cols=\"50\"></textarea><br><input type=\"submit\" value=\"Send\"></form>";
+		}
+		$db->action("SELECT * FROM wall WHERE user_id={$_GET['user']} ORDER BY uid DESC");
+		echo "<div id=\"wall\">";
+		if(pg_num_rows($db->result)!=0)
+		{
+			while($wall=pg_fetch_array($db->result))
+			{
+				echo "{$wall['message']}<br>";
+			}
+		}
+		echo "</div>";
+		echo "</div>";
 }
 else
 {

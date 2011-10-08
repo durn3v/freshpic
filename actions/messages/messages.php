@@ -15,7 +15,7 @@ while($users=pg_fetch_array($result))
 if(isset($_SESSION['user_id']))
 {
 	$db->connect();
-	$db->action("SELECT * FROM messages WHERE to_id='".$_SESSION['user_id']."' ORDER BY uid DESC LIMIT 10");
+	$db->action("SELECT * FROM messages WHERE to_id='".$_SESSION['user_id']."' ORDER BY uid DESC");
 	$i=0;
 	while ($messages = pg_fetch_array($db->result))
 	{
@@ -29,7 +29,7 @@ if(isset($_SESSION['user_id']))
 			echo "<div class=\"{$message_style}\">";
 			echo "<table><tr><td width=\"50\">";
 			$avatar=avatar($messages['from_id']);
-			if($avatar!="nothing") echo "<img src=\"./i/{$avatar}\">";
+			if($avatar!="nothing") echo "<img src=\"./i/{$messages['from_id']}/{$avatar}\">";
 			echo "</td><td>{$user}<br>{$messages['message']}</td></tr></table>";
 			//echo "<a href=\"?delete={$message_id};\">{$lang['delete']}</a>";
 			echo "</div>";

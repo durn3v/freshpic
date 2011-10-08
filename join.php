@@ -46,9 +46,10 @@ else
 			{
 				$user_id = $users['uid'];
 			}
-			$sql_mail = "INSERT INTO counts (user_id) VALUES ('".$user_id."')";
-			pg_query($sql_mail) or die(pg_last_error());
 			pg_close($dbconn);
+			mkdir("./i/{$user_id}");
+			mkdir("./s/{$user_id}");
+			mkdir("./p/{$user_id}");
 			echo "$name вы успешно активировали свой аккаунт";
 		}
 	}
