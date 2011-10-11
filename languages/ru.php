@@ -18,6 +18,7 @@ $lang = array(
 	'name_album' => 'Название',
 	'upload_some_photos' => 'Загрузите фотографии',
 	
+	'remember_me' => 'Запомнить меня',
 	'save' => 'Сохранить',
 	'settings' => 'Настройки',
 	'upload_profile_photo' => 'Загрузить фотографию на профиль',

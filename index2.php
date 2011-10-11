@@ -20,7 +20,7 @@ echo "<div class=\"main\">";
 
 
 echo 	"<form method=\"POST\" action=\"join.php\">
-	<table style=\"text-align:right;\"><tr><td colspan=\"2\" align=\"center\"><b>
+	<table style=\"text-align:right;\"><tr><td collspan=\"2\"><b>
 	{$lang['registration']}
 	</b></td></tr><tr><td>
 	{$lang['firstname']}:</td><td><input type=\"text\" name=\"firstname\"></td></tr><tr><td>
@@ -30,10 +30,10 @@ echo 	"<form method=\"POST\" action=\"join.php\">
 	{$lang['ver_password']}:</td><td><input type=\"password\" name=\"ver_password\"></td></tr><tr><td>
 	{$lang['sex']}: {$lang['sex_m']}<input type=\"radio\" name=\"sex\" value=\"m\">
 	{$lang['sex_f']}<input type=\"radio\" name=\"sex\" value=\"f\"></td></tr>
-	<tr><td colspan=\"2\">
+	<tr><td collspan=\"2\">
 	<input type=\"hidden\" name=\"act\">
 	<input type=\"submit\" value=\"{$lang['registration']}\">
-	</form></td></tr></table>";
+	</td></tr></table></form>";
 
 echo "<div class=\"lang\">
 	<a href=\"&lang=ru\">Русский</a>

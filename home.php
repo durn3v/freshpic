@@ -48,19 +48,32 @@ function wall()
 			}
 		});
 	}
-$('#send').submit(function(){  
-                $.ajax({  
-                    type: \"POST\",  
-                    url: \"/actions/wall/send.php\",  
-                    data: \"message=\"+$(\"#message\").val(),  
-                    success: function(html){
-                    $(\"#content\").html(html);
-                    wall();
-                    }  
-                });  
+$('#send').submit(function(){
+		if($('textarea#message').val()!='') 
+		{
+			$('input[type=submit]', this).attr('disabled', 'disabled');
+			$.ajax({  
+			type: \"POST\",  
+			url: \"/actions/wall/send.php\",  
+			data: \"message=\"+$(\"#message\").val(),  
+			success: function(html){
+			$(\"#content\").html(html);
+			wall();
+			}  
+			});
+			this.reset();
+			$('input[type=submit]', this).removeAttr('disabled');
+                }
                 return false;  
             }); });</script>";
 echo $after_scripts;
+if(isset($_COOKIE['remember']) && $_COOKIE['remember']=="yes")
+{
+	if(!isset($_SESSION['user_id']))
+	{
+		$_SESSION['user_id']=$user_id;
+	}
+}
 if(isset($_POST['email']) && isset($_POST['pass']))
 {
 	$email=$_POST['email'];
@@ -75,6 +88,10 @@ if(isset($_POST['email']) && isset($_POST['pass']))
 	if($pass==$passtwo)
 	{
 		$_SESSION['user_id']=$user_id;
+		if($_POST['remember']=="yes")
+		{
+			setcookie("remember", "yes", time()+3600*24*30, "/");
+		}
 		header("Location: home.php");
 		exit();
 	}
@@ -82,6 +99,7 @@ if(isset($_POST['email']) && isset($_POST['pass']))
 
 if(isset($_GET['act'])=="logout")
 {
+	unset($_COOKIE['remember']);
 	unset($_SESSION['user_id']);
 	header("Location: ./");
 }
@@ -105,9 +123,9 @@ if(isset($_SESSION['user_id']))
 		}
 		echo "<div style=\"top:0px; width:250px;\">";
 		if($online_time+35>time()) echo "online <br>";
-		if($avatar!="nothing") echo "<img src=\"./s/{$_GET['user']}/{$avatar}\"><br>";
+		if($avatar!="nothing") echo "<img src=\"./s/{$_GET['user']}/{$avatar}.jpg\"><br>";
 		echo $name." ".$lastname;
-		}
+	}
 		if($_GET['user']==$_SESSION['user_id'])
 		{ 
 			echo " ({$lang['that_is_you']})";	
@@ -124,7 +142,8 @@ if(isset($_SESSION['user_id']))
 		}
 		$db->action("SELECT following FROM counts WHERE user_id=".$_GET['user']);
 		$following=pg_fetch_array($db->result);
-		if($following['following']>0) {
+		if($following['following']>0) 
+		{
 			echo "<br>".$lang['following_this_people'];
 			echo " ".$following['following']. " :";
 			$db->action("SELECT * FROM followers WHERE who='".$_GET['user']."'");
@@ -150,7 +169,8 @@ if(isset($_SESSION['user_id']))
 		echo "</div><div style=\"position: absolute; top:0px; left:250px;\">";
 		if($_GET['user']==$_SESSION['user_id'])
 		{
-			echo "What's up:<br><form id=\"send\"><textarea id=\"message\" rows=\"2\" cols=\"50\"></textarea><br><input type=\"submit\" value=\"Send\"></form>";
+			echo "What's up:<br><form id=\"send\"><textarea id=\"message\" rows=\"2\" cols=\"50\"></textarea><br>
+			<input type=\"submit\" value=\"Send\" id=\"submit\"></form>";
 		}
 		$db->action("SELECT * FROM wall WHERE user_id={$_GET['user']} ORDER BY uid DESC");
 		echo "<div id=\"wall\">";
@@ -170,6 +190,7 @@ else
 		{$lang['email']}: <input type=\"text\" name=\"email\">
 		{$lang['password']}<input type=\"password\" name=\"pass\">
 		<input type=\"submit\" value=\"{$lang['sign_in']}\">
+		<br>Remember me <input type=\"checkbox\" name=\"remember\" value=\"yes\" checked>
 		</form>";
 }
 $db->close();
