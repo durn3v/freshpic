@@ -9,9 +9,6 @@ Header("Location: albums.php?user={$_SESSION['user_id']}");
 
 echo $start;
 echo "<title>{$lang['albums']}</title>";
-echo "<style>
-
-</style>";
 echo $after_title;
 echo "<script>
 function view(image) {";
@@ -63,37 +60,48 @@ $(window).bind('hashchange', function() {
 
 function view2(image)
 {
-		$.ajax({
-			type: \"POST\", 
-			url: \"actions/albums/view.php\",
-			data: \"&user={$_GET['user']}&image=\"+image,
-			cache: false,
-			success: function(html) {
-			$(\"#view\").html(html);
-			$('#vis').css('display','inline');
-			$('#view').css('display','inline');
+	$.ajax({
+		type: \"POST\", 
+		url: \"actions/albums/view.php\",
+		data: \"&user={$_GET['user']}&image=\"+image,
+		cache: false,
+		success: function(html) {
+			if(html!='')
+			{
+				$(\"#view\").html(html);
+				$('#vis').css('display','inline');
+				$('#view').css('display','inline');
 			}
-		});
+		}
+	});
 }
 function like()
 {
-$.ajax({
+	$.ajax({
 		type: \"GET\", 
 		url: \"actions/albums/like.php\",
 		data: \"&act=like&user_id={$_GET['user']}&name=\"+location.hash.replace('#!',''),
 		cache: false,
 		success: function(html) {
+			if(html!='')
+			{
+				$('#like_inf').html(html);
+			}
 		}
 	});
 }
 function dislike()
 {
-$.ajax({
+	$.ajax({
 		type: \"GET\", 
 		url: \"actions/albums/like.php\",
 		data: \"&act=dislike&user_id={$_GET['user']}&name=\"+location.hash.replace('#!',''),
 		cache: false,
 		success: function(html) {
+			if(html!='')
+			{
+				$('#like_inf').html(html);
+			}
 		}
 	});
 }
@@ -210,7 +218,8 @@ if(isset($_GET['user']))
 				$i++;
 			}
 		}
-		$db->action("UPDATE albums SET count={$count} WHERE user_id={$_SESSION['user_id']} AND album_id={$_POST['album_id']}");
+		$db->action("UPDATE albums SET count=count+{$count} WHERE user_id={$_SESSION['user_id']} AND album_id={$_POST['album_id']}");
+		$db->action("INSERT INTO feed (user_id,type,value1,value2) VALUES ({$_SESSION['user_id']}, 'photos', '{$count}', '{$_POST['album_id']}');");
 		$db->close();
 		
 	} 

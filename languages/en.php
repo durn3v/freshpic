@@ -18,6 +18,7 @@ $lang = array(
 	'name_album' => 'Name of album',
 	'upload_some_photos' => 'Upload some photos',
 	
+	'feed' => 'Feed',
 	'remember_me' => 'Remember me',
 	'save' => 'Save',
 	'settings' => 'Settings',

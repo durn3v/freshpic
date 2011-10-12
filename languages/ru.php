@@ -18,6 +18,7 @@ $lang = array(
 	'name_album' => 'Название',
 	'upload_some_photos' => 'Загрузите фотографии',
 	
+	'feed' => 'Новости',
 	'remember_me' => 'Запомнить меня',
 	'save' => 'Сохранить',
 	'settings' => 'Настройки',

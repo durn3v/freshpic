@@ -31,6 +31,6 @@ if(isset($_SESSION['user_id']))
 	}
 	echo "<a href=\"#!{$next_image}\"><img src=\"/s/{$user_id}/{$name}.jpg\"></a><br>
 	<input onclick=\"like()\" type=\"button\" value=\"like\">|<input onclick=\"dislike()\" type=\"button\" value=\"dislike\">
-	<br>like:{$like} dislike:{$dislike}";
+	<br><div id=\"like_inf\">like:{$like} dislike:{$dislike}</div>";
 }
 ?>
