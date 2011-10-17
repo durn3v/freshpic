@@ -98,10 +98,11 @@ if(isset($_SESSION['user_id']))
 	<a class=\"top_link\" href=\"settings.php\">{$lang['settings']}</a>
 	<a class=\"top_link\" href=\"home.php?act=logout\">{$lang['log_out']}</a></div>";
 } else {
-	$menu="";
+	$menu="<div class=\"top\"></div>";
 }
 $after_scripts="<script>
 	var messages = $(\"#messages\").html();
+	var title = $('title').html();
 	function new_messages()  
 	  {  
 	      $.ajax({  
@@ -111,20 +112,14 @@ $after_scripts="<script>
 		      if(data==0) {
 			if(messages==data){} else {
 			$(\"#messages\").html(\"\");
-			$('title').html(js_title);
+			$('title').html(title);
 			}
 			}
 		      else {
-		      if(data==1){
+		      if(data>0){
 			if(messages==data){} else {
 			$(\"#messages\").html(data);
-			$('title').html('{$lang['new_message']}');}}
-		      if(data>1) {
-			if(messages==data){} else {
-			$(\"#messages\").html(data);
-			$('title').html('{$lang['new_messages']}');}
-			}
-			
+			$('title').html(title+' (!)');}}
 		      }
 		}  
 		});  
@@ -150,10 +145,10 @@ $after_scripts="<script>
 
 
 
-$close= "<div class=\"lang\">
+$close= "</div><div class=\"lang\">
 	<a href=\"&lang=ru\">Русский</a>
 	<a href=\"&lang=en\">English</a>
-	<a href=\"&lang=de\">Deutsch</a></div>
+	<a href=\"&lang=de\">Deutsch</a>
 	</div></body></html>";
 
 ?>

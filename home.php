@@ -7,6 +7,48 @@ $sql_from="SELECT * FROM users WHERE uid=".$from_id;
 $result_user=pg_query($sql_from) or die(pg_last_error());
 while ($from_user = pg_fetch_array($result_user)) { return $from_user['name']." ".$from_user['lastname']; }
 }
+
+echo $start;
+echo "<title>Home</title>";
+echo $after_title;
+
+if(isset($_COOKIE['remember']))
+{
+	if(!isset($_SESSION['user_id']))
+	{
+		$_SESSION['user_id']=$_COOKIE['remember'];
+	}
+}
+if(isset($_POST['email']) && isset($_POST['pass']))
+{
+	$email=$_POST['email'];
+	$pass=md5($_POST['pass']);
+	$db->connect();
+	$db->action("SELECT * FROM users WHERE email='".$email."'");
+	while ($sign = pg_fetch_array($db->result))
+	{
+		$passtwo=$sign['pass'];
+		$user_id=$sign['uid'];
+	}
+	if($pass==$passtwo)
+	{
+		$_SESSION['user_id']=$user_id;
+		if($_POST['remember']=="yes")
+		{
+			setcookie("remember", $user_id, time()+3600*24*30, "/");
+		}
+		header("Location: home.php");
+		exit();
+	}
+}
+
+if(isset($_GET['act'])=="logout")
+{
+	SetCookie("remember","");
+	unset($_SESSION['user_id']);
+	header("Location: ./");
+}
+
 if(isset($_SESSION['user_id']))
 {
 	if(!isset($_GET['user'])) { header("Location: /".$_SESSION['user_id']);}
@@ -33,10 +75,7 @@ if(isset($_SESSION['user_id']))
 		exit();
 	}
 }
-echo $start;
-echo "<title>Home</title>";
-echo $after_title;
-echo "<script>var js_title='Home';
+echo "<script>
 $(document).ready(function(){ 
 function wall()
 	{
@@ -67,42 +106,7 @@ $('#send').submit(function(){
                 return false;  
             }); });</script>";
 echo $after_scripts;
-if(isset($_COOKIE['remember']) && $_COOKIE['remember']=="yes")
-{
-	if(!isset($_SESSION['user_id']))
-	{
-		$_SESSION['user_id']=$user_id;
-	}
-}
-if(isset($_POST['email']) && isset($_POST['pass']))
-{
-	$email=$_POST['email'];
-	$pass=md5($_POST['pass']);
-	$db->connect();
-	$db->action("SELECT * FROM users WHERE email='".$email."'");
-	while ($sign = pg_fetch_array($db->result))
-	{
-		$passtwo=$sign['pass'];
-		$user_id=$sign['uid'];
-	}
-	if($pass==$passtwo)
-	{
-		$_SESSION['user_id']=$user_id;
-		if($_POST['remember']=="yes")
-		{
-			setcookie("remember", "yes", time()+3600*24*30, "/");
-		}
-		header("Location: home.php");
-		exit();
-	}
-}
 
-if(isset($_GET['act'])=="logout")
-{
-	unset($_COOKIE['remember']);
-	unset($_SESSION['user_id']);
-	header("Location: ./");
-}
 
 if(isset($_SESSION['user_id']))
 {
@@ -121,7 +125,7 @@ if(isset($_SESSION['user_id']))
 			$avatar=$user['avatar'];
 			}
 		}
-		echo "<div style=\"top:0px; width:250px;\">";
+		echo "<div class=\"left\">";
 		if($online_time+35>time()) echo "online <br>";
 		if($avatar!="nothing") echo "<img src=\"./s/{$_GET['user']}/{$avatar}.jpg\"><br>";
 		echo $name." ".$lastname;
@@ -166,10 +170,29 @@ if(isset($_SESSION['user_id']))
 				echo "<a href=\"{$follower['who']}\">$user</a>\n";
 			}
 		}
-		echo "</div><div style=\"position: absolute; top:0px; left:250px;\">";
+		echo "</div>";
+		
+		$db->action("SELECT * FROM albums WHERE user_id={$_GET['user']} ORDER BY seq");
+		echo "<div class=\"right\"><table>";
+		if(pg_num_rows($db->result)==0)
+		{
+			echo "{$lang['no_albums']}";
+		} else {
+			while($album=pg_fetch_array($db->result))
+			{
+			$name=$album['name'];
+			$album_id=$album['album_id'];
+			$count=$album['count'];
+			$cover=$album['cover'];
+			echo "<tr><td><a href=\"albums.php?user={$_GET['user']}&album={$album_id}\"><img src=\"./i/{$_GET['user']}/{$cover}.jpg\"></a></td><td><a href=\"albums.php?user={$_GET['user']}&album={$album_id}\">{$name}</a></td></tr>";
+			}
+		}
+		echo "</table></div>";
+		
+		echo "</div><div class=\"center\">";
 		if($_GET['user']==$_SESSION['user_id'])
 		{
-			echo "What's up:<br><form id=\"send\"><textarea id=\"message\" rows=\"2\" cols=\"50\"></textarea><br>
+			echo "What's up:<br><form id=\"send\"><textarea id=\"message\" rows=\"2\" cols=\"35\"></textarea><br>
 			<input type=\"submit\" value=\"Send\" id=\"submit\"></form>";
 		}
 		$db->action("SELECT * FROM wall WHERE user_id={$_GET['user']} ORDER BY uid DESC");

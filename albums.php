@@ -10,7 +10,8 @@ Header("Location: albums.php?user={$_SESSION['user_id']}");
 echo $start;
 echo "<title>{$lang['albums']}</title>";
 echo $after_title;
-echo "<script>
+echo "<script type=\"text/javascript\" src=\"jquery.tablednd_0_5.js\"></script>
+<script>
 function view(image) {";
 if(isset($_GET['album']))
 {
@@ -55,7 +56,14 @@ echo "	$('#vis').css('display','inline');
 	}
 	});
 $(window).bind('hashchange', function() { 
-   if(window.location.hash) view2(window.location.hash.replace('#!',''));
+	if(window.location.hash)
+	{
+		view2(window.location.hash.replace('#!',''));
+	} else
+	{
+		$('#vis').css('display','none');
+		$('#view').css('display','none');
+	}
 });
 
 function view2(image)
@@ -105,6 +113,39 @@ function dislike()
 		}
 	});
 }
+
+function comment() 
+{
+	$.ajax({  
+		type: \"GET\",  
+		url: \"actions/albums/comment.php\",
+		data: \"&user_photo={$_GET['user']}&image=\"+location.hash.replace('#!','')+\"&comment=\"+$(\"#comment\").val(),  
+		success: function(html){
+		$(\"#comments\").html(html);
+		}  
+	});
+}
+$(document).ready(function(){
+// ---------
+$(\"#albums\").tableDnD({
+  onDragClass: \"dragRow\",
+  onDrop: function(table, row) {
+    var rows = table.tBodies[0].rows;
+    var messageString = \"Перемещена строка \" + row.id + \"<br />Новый порядок сортировки: \";
+    for (var i=0; i<rows.length; i++) {
+      messageString += rows[i].id + \" \";
+    }
+    $(\"#messageArea\").html(messageString);
+    $(\"#albums\").find(\"td[@id='\"+ row.id +\"']\").fadeOut(700, function () {
+      $(this).fadeIn(300);
+    });
+  },
+  onDragStart: function(table, row) {
+    $(\"#messageArea\").html(\"Перемещаем строку \" + row.id);
+  }
+});
+// ---------
+});
 
 	</script>";
 echo $after_scripts;
@@ -163,19 +204,23 @@ if(isset($_GET['user']))
 	if(!isset($_GET['album']))
 	{
 		$db->connect();
-		$db->action("SELECT * FROM albums WHERE user_id={$_GET['user']}");
-		echo "<table>";
+		$db->action("SELECT * FROM albums WHERE user_id={$_GET['user']} ORDER BY seq");
+		echo "<table id=\"albums\">";
 		if(pg_num_rows($db->result)==0)
 		{
 			echo "{$lang['no_albums']}";
-		} else {
+		} else 
+		{
+			$i=1;
+			echo "<div id=\"messageArea\"></div>";
 			while($album=pg_fetch_array($db->result))
 			{
 			$name=$album['name'];
 			$album_id=$album['album_id'];
 			$count=$album['count'];
 			$cover=$album['cover'];
-			echo "<tr><td><a href=\"?user={$_GET['user']}&album={$album_id}\"><img src=\"./i/{$_GET['user']}/{$cover}.jpg\"></a></td><td><a href=\"?user={$_GET['user']}&album={$album_id}\">{$name}</a></td></tr>";
+			echo "<tr id=\"{$i}\"><td><a href=\"?user={$_GET['user']}&album={$album_id}\"><img src=\"./i/{$_GET['user']}/{$cover}.jpg\"></a></td><td><a href=\"?user={$_GET['user']}&album={$album_id}\">{$name}</a></td></tr>";
+			$i++;
 			}
 		}
 		echo "</table>";

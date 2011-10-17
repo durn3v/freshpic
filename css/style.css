@@ -288,10 +288,9 @@ p#flags {
  height:23px;*/
  }
  .main {
-position:absolute;
-left:0px;
-top:35px;
-width:100%;
+ width: 900px;
+ margin: 0 auto;
+ margin-top:35px;
 }
 #vis {
 	position:fixed;
@@ -331,6 +330,20 @@ z-index:2;
 	height:60px;
 	background-color:#d4ddff;
 	}
+.left {
+  
+  width: 200px; /* Ширина левой колонки */
+ float: left;
+}
+.right {
+  
+  width: 200px; /* Ширина правой колонки */
+ float: right;
+}
+.center {
+  margin:0 200px;
+  padding:5px;
+}
 
 A.message_link:link {color:black; text-decoration:none;}
 A.message_link:visited {color:black;}

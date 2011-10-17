@@ -35,11 +35,16 @@ echo $after_scripts;
 		if($x!=$i) $users=$users." AND ";
 	}
 	$db->action("SELECT * FROM feed WHERE {$users} ORDER BY uid DESC");
-	while($feed=pg_fetch_array($db->result))
+	if(pg_num_rows($db->result)!=0)
 	{
-		$name=user($feed['user_id']);
-		$album=album($feed['user_id'],$feed['value2']);
-		if($feed['type']=='photos') echo "{$name} added {$feed['value1']} photos to album '{$album}'";
+		while($feed=pg_fetch_array($db->result))
+		{
+			$name=user($feed['user_id']);
+			$album=album($feed['user_id'],$feed['value2']);
+			if($feed['type']=='photos') echo "{$name} added {$feed['value1']} photos to album <a href=\"albums.php?user={$feed['user_id']}&album={$feed['value2']}\">{$album}</a>";
+			if($feed['type']=='status') echo "{$name}: {$feed['value1']}";
+			echo "<br>";
+		}
 	}
 	$db->close();
 echo $close;

@@ -12,7 +12,8 @@ if(isset($_SESSION['user_id']))
 {
 	$message=message($_POST['message']);
 	$db->connect();
-	$db->action("INSERT INTO wall (user_id,message) VALUES ({$_SESSION['user_id']},'{$message}')");
+	$db->action("INSERT INTO wall (user_id,message) VALUES ({$_SESSION['user_id']},'{$message}');");
+	$db->action("INSERT INTO feed (user_id,type,value1) VALUES ({$_SESSION['user_id']}, 'status', '{$message}');");
 	$db->close();
 }
 ?>
