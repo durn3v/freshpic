@@ -14,13 +14,15 @@ while($users=pg_fetch_array($result))
 	{return $users['avatar'];}
 }
 
+if(!isset($_GET['act'])) $act = "inbox";
+if(isset($_GET['act']) and $_GET['act']=='outbox') $act = $_GET['act'];
+
 echo $start;
 echo "<title>{$lang['messages']}</title>";
 echo $after_title;
 echo "<script>
 var js_title='{$lang['messages']}';
-        $(document).ready(function(){  
-          
+$(document).ready(function(){
             $('#send').submit(function(){  
                 $.ajax({  
                     type: \"POST\",  
@@ -36,23 +38,28 @@ var js_title='{$lang['messages']}';
 
 $(window).scroll(function(){
 if ($(window).scrollTop() == $(document).height() - $(window).height()){
-upd();
+upd('{$act}');
 }
 });
 nextPage=1;
-function upd() 
+function upd(act) 
 { 
-$.ajax({
-type: \"GET\",
-url: \"/actions/messages/messages.php?page=\" + nextPage,
-cache: false,
-success: function(html){
-$(\"#mail\").append(html);
-}
-});
-nextPage++;
+	$.ajax({
+	type: \"GET\",
+	url: \"/actions/messages/messages.php?act=\" + act + \"&page=\" + nextPage,
+	cache: false,
+	success: function(html){
+		$(\"#mail\").append(html);
+	}
+	});
+	nextPage++;
 };
-upd();
+upd('{$act}');
+var hei = $(window).height();
+if(hei>600)
+{
+	upd('{$act}');
+}
 });
 </script>";
 echo $after_scripts;
@@ -125,34 +132,29 @@ if(isset($_SESSION['user_id']))
 		break;
 
 	case "outbox":
-		$db->connect();
-		$db->action("SELECT * FROM messages WHERE from_id='".$_SESSION['user_id']."' ORDER BY uid DESC");
-		while ($messages = pg_fetch_array($db->result)) {
-		      $user=from_user($messages['to_id']);
-		      $avatar=avatar($messages['to_id']);
-		      echo "<a href=\"?act=show&id=".$messages['message_id_from']."&out\">";
-		      echo "<div class=\"message\">";
-		      echo "<table><tr><td width=\"50\">";
-		      if($avatar!="nothing") echo "<img src=\"./i/{$avatar}\">";
-		      echo "</td><td>{$user}<br>{$messages['message']}</td></tr></table>";
-		      echo "</div></a>";
-		}
+		echo "<div class=\"left\">";
 		echo "<a href=\"?\">{$lang['inbox']}</a><br>";
+		echo "<a href=\"?act=write\">{$lang['write_a_message']}</a>";
+		echo "</div>";
+		echo "<div class=\"center\"><div id=\"mail\"></div></div>";
 		$db->close();
 		break;
 
 	default:
+		echo "<div class=\"left\">";
+		echo "<a href=\"?act=outbox\">{$lang['outbox']}</a><br>";
+		echo "<a href=\"?act=write\">{$lang['write_a_message']}</a>";
+		echo "</div>";
+		
 		$db->connect();
 		if(isset($_GET['delete']))
 		{
 		$db->action("DELETE FROM messages WHERE to_id=".$_SESSION['user_id']." AND message_id_to=".$_GET['delete']);
 		header("Location: mail.php");
 		}
-		echo "<div id=\"mail\"></div>";
-		echo "<a href=\"?act=outbox\">{$lang['outbox']}</a><br>";
+		echo "<div class=\"center\"><div id=\"mail\"></div></div>";
 		$db->close();
 	endswitch;
-	echo "<a href=\"?act=write\">{$lang['write_a_message']}</a>";
 
 }
 else

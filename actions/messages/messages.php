@@ -14,6 +14,8 @@ while($users=pg_fetch_array($result))
 }
 if(isset($_SESSION['user_id']))
 {
+	if($_GET['act']=='inbox')
+	{
 	$db->connect();
 	$db->action("SELECT * FROM messages WHERE to_id='".$_SESSION['user_id']."' ORDER BY uid DESC");
 	$i=0;
@@ -36,6 +38,29 @@ if(isset($_SESSION['user_id']))
 			echo "</a>";
 		}
 	$i++;
+	}
+	}
+	if($_GET['act']=='outbox')
+	{
+		$db->connect();
+		$db->action("SELECT * FROM messages WHERE from_id='".$_SESSION['user_id']."' ORDER BY uid DESC");
+		
+		while ($messages = pg_fetch_array($db->result)) 
+		{
+			if(isset($_GET['page'])) $page=$_GET['page']*10; else $page=10;
+			if($i>=$page-10 and $i<$page)
+			{
+				$user=from_user($messages['to_id']);
+				$avatar=avatar($messages['to_id']);
+				echo "<a href=\"?act=show&id=".$messages['message_id_from']."&out\">";
+				echo "<div class=\"message\">";
+				echo "<table><tr><td width=\"50\">";
+				if($avatar!="nothing") echo "<img src=\"./i/{$messages['to_id']}/{$avatar}\">";
+				echo "</td><td>{$user}<br>{$messages['message']}</td></tr></table>";
+				echo "</div></a>";
+			}
+			$i++;
+		}
 	}
 	$db->close();
 }
