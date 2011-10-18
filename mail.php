@@ -58,7 +58,7 @@ function upd(act)
 };
 upd('{$act}');
 var hei = $(window).height();
-if(hei/600>1)
+if($(document).height()-50 <= $(window).height())
 {
 	upd('{$act}');
 }

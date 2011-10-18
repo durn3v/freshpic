@@ -37,8 +37,7 @@ if(isset($_SESSION['user_id']))
 	echo "<a href=\"#!{$next_image}\"><img src=\"/s/{$user_id}/{$name}.jpg\"></a><br>
 	<input onclick=\"like()\" type=\"button\" value=\"like\"> <input onclick=\"dislike()\" type=\"button\" value=\"dislike\">
 	<br><div id=\"like_inf\">like:{$like} dislike:{$dislike}</div>";
-	echo "<input type=\"text\" id=\"comment\"><input onclick=\"comment()\" type=\"button\" value=\"send\">";
-	echo "<div id=\"comments\">";
+	echo "<div id=\"comments\" style=\"text-align:left; max-width:500px; margin: 0 auto;\">";
 	$db->action("SELECT * FROM photo_comments WHERE user_photo={$user_id} AND image='{$name}' ORDER BY uid");
 	if(pg_num_rows($db->result)!=0)
 	{
@@ -49,6 +48,7 @@ if(isset($_SESSION['user_id']))
 		}
 	}
 	echo "</div>";
+	echo "<textarea id=\"comment\" cols=\"30\"></textarea><br><input onclick=\"comment()\" type=\"button\" value=\"send\">";
 }
 $db->close();
 ?>

@@ -310,6 +310,7 @@ position:absolute;
 top:2px;
 left:150px;
 right:150px;
+min-width: 550px;
 background-color:white;
 border: 1px solid;
 display:none;

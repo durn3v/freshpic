@@ -183,15 +183,7 @@ function imageresize($outfile,$infile,$neww,$newh,$quality,$type)
 	imagesavealpha($im1, true);
 	}
 	imagecopyresampled($im1,$im,0,0,0,0,$w,$h,imagesx($im),imagesy($im));
-
-	if($type == "image/png" or $type == "image/x-png")
-	{
-	imagepng($im1,$outfile);
-	}
-	else
-	{
 	imagejpeg($im1,$outfile,$quality);
-	}
 	imagedestroy($im);
 	imagedestroy($im1);
 }
@@ -243,25 +235,30 @@ if(isset($_GET['user']))
 		$db->connect();
 		$db->action("SELECT count FROM albums WHERE user_id={$_SESSION['user_id']}");
 		while($albums=pg_fetch_array($db->result)) $count=$albums['count'];
-		$i=1;
-		foreach($_FILES['pic']['tmp_name'] as $file) 
+		$z=0;
+		foreach($_FILES['pic'] as $file) 
 		{
-			if(is_uploaded_file($file))
-			{
+		$z++;
+		}
+		for($i=0; $i<=$z; $i++)
+		{
+		$file = $_FILES['pic']['tmp_name'][$i];
+		$type = $_FILES['pic']['type'][$i];
+		if(is_uploaded_file($file))
+		{
 				$db->action("SELECT images FROM counts WHERE user_id={$_SESSION['user_id']}");
 				while($images=pg_fetch_array($db->result)) $uid=$images['images']+1;
 				$db->action("UPDATE counts SET images='{$uid}' WHERE user_id={$_SESSION['user_id']}");
-				$name = chr( rand(97, 122) ).chr( rand(97, 122) ).chr( rand(97, 122) ).chr( rand(97, 122) ).		$uid;
-				if($i==1) $db->action("UPDATE albums SET cover='{$name}' WHERE user_id={$_SESSION['user_id']} AND album_id={$_POST['album_id']}");
+				$name = chr( rand(97, 122) ).chr( rand(97, 122) ).chr( rand(97, 122) ).chr( rand(97, 122) ).$uid;
+				if($i==0) $db->action("UPDATE albums SET cover='{$name}' WHERE user_id={$_SESSION['user_id']} AND album_id={$_POST['album_id']}");
 				$db->action("INSERT INTO images (user_id,album_id,name,seq) VALUES ({$_SESSION['user_id']}, {$_POST['album_id']}, '{$name}', {$i});");
 				move_uploaded_file($file, "./p/{$_SESSION['user_id']}/{$name}.jpg");
-				imageresize("./i/{$_SESSION['user_id']}/{$name}.jpg","./p/{$_SESSION['user_id']}/{$name}.jpg",100,100,90, "image/jpeg");
-				imageresize("./s/{$_SESSION['user_id']}/{$name}.jpg","./p/{$_SESSION['user_id']}/{$name}.jpg",800,600,90, "image/jpeg");
+				imageresize("./i/{$_SESSION['user_id']}/{$name}.jpg","./p/{$_SESSION['user_id']}/{$name}.jpg",100,100,90, $type);
+				imageresize("./s/{$_SESSION['user_id']}/{$name}.jpg","./p/{$_SESSION['user_id']}/{$name}.jpg",800,600,90, $type);
 				//list($width, $height, $type) = getimagesize("./s/{$name}");
 				echo "<img src=\"./i/{$_SESSION['user_id']}/{$name}.jpg\">";
 				$count++;
-				$i++;
-			}
+		}
 		}
 		$db->action("UPDATE albums SET count=count+{$count} WHERE user_id={$_SESSION['user_id']} AND album_id={$_POST['album_id']}");
 		$db->action("INSERT INTO feed (user_id,type,value1,value2) VALUES ({$_SESSION['user_id']}, 'photos', '{$count}', '{$_POST['album_id']}');");
