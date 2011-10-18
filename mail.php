@@ -43,20 +43,22 @@ upd('{$act}');
 });
 nextPage=1;
 function upd(act) 
-{ 
+{
+	$(\"#loader\").css('display','inline');
 	$.ajax({
 	type: \"GET\",
 	url: \"/actions/messages/messages.php?act=\" + act + \"&page=\" + nextPage,
 	cache: false,
 	success: function(html){
 		$(\"#mail\").append(html);
+		$(\"#loader\").css('display','none');
 	}
 	});
 	nextPage++;
 };
 upd('{$act}');
 var hei = $(window).height();
-if(hei>600)
+if(hei/600>1)
 {
 	upd('{$act}');
 }
@@ -152,7 +154,7 @@ if(isset($_SESSION['user_id']))
 		$db->action("DELETE FROM messages WHERE to_id=".$_SESSION['user_id']." AND message_id_to=".$_GET['delete']);
 		header("Location: mail.php");
 		}
-		echo "<div class=\"center\"><div id=\"mail\"></div></div>";
+		echo "<div class=\"center\"><div id=\"mail\"></div><div id=\"loader\" style=\"display:none;\"><img src=\"loader.gif\"></div></div>";
 		$db->close();
 	endswitch;
 

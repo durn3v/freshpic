@@ -40,9 +40,15 @@ echo $after_scripts;
 		while($feed=pg_fetch_array($db->result))
 		{
 			$name=user($feed['user_id']);
-			$album=album($feed['user_id'],$feed['value2']);
-			if($feed['type']=='photos') echo "{$name} added {$feed['value1']} photos to album <a href=\"albums.php?user={$feed['user_id']}&album={$feed['value2']}\">{$album}</a>";
-			if($feed['type']=='status') echo "{$name}: {$feed['value1']}";
+			if($feed['type']=='photos') 
+			{
+			$album=album($feed['user_id'],$feed['value2']); 
+			echo "{$name} added {$feed['value1']} photos to album <a href=\"albums.php?user={$feed['user_id']}&album={$feed['value2']}\">{$album}</a>";
+			}
+			if($feed['type']=='status') 
+			{
+			echo "{$name}: {$feed['value1']}";
+			}
 			echo "<br>";
 		}
 	}

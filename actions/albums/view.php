@@ -1,6 +1,11 @@
 <?php
 session_start();
 include("../../config.php");
+function user($from_id) {
+$sql_from="SELECT * FROM users WHERE uid=".$from_id;
+$result_user=pg_query($sql_from) or die(pg_last_error());
+while ($from_user = pg_fetch_array($result_user)) { return $from_user['name']." ".$from_user['lastname']; }
+}
 if(isset($_SESSION['user_id']))
 {
 	$name=$_POST['image'];
@@ -34,12 +39,13 @@ if(isset($_SESSION['user_id']))
 	<br><div id=\"like_inf\">like:{$like} dislike:{$dislike}</div>";
 	echo "<input type=\"text\" id=\"comment\"><input onclick=\"comment()\" type=\"button\" value=\"send\">";
 	echo "<div id=\"comments\">";
-	$db->action("SELECT * FROM photo_comments WHERE user_photo={$user_id} AND image='{$name}' ORDER BY uid DESC");
+	$db->action("SELECT * FROM photo_comments WHERE user_photo={$user_id} AND image='{$name}' ORDER BY uid");
 	if(pg_num_rows($db->result)!=0)
 	{
 		while($comment=pg_fetch_array($db->result))
 		{
-			echo "<p>{$comment['user_id']}<br>{$comment['comment']}</p>";
+			$user=user($comment['user_id']);
+			echo "<p>{$user}<br>{$comment['comment']}</p>";
 		}
 	}
 	echo "</div>";

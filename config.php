@@ -91,12 +91,14 @@ $after_title="<link rel=\"stylesheet\" type=\"text/css\" href=\"css/style.css\" 
 
 if(isset($_SESSION['user_id']))
 {
-	$menu="<div class=\"top\"><a class=\"top_link\" href=\"{$_SESSION['user_id']}\">{$lang['profile']}</a>
+	$menu="<div class=\"top\">
+	<a class=\"top_link\" href=\"{$_SESSION['user_id']}\">{$lang['profile']}</a>
 	<a class=\"top_link\" href=\"albums.php\">{$lang['albums']}</a>
 	<a class=\"top_link\" href=\"mail.php\">{$lang['messages']}<span id=\"messages\">{$new_messages}</span></a>
 	<a class=\"top_link\" href=\"feed.php\">{$lang['feed']}</a>
 	<a class=\"top_link\" href=\"settings.php\">{$lang['settings']}</a>
-	<a class=\"top_link\" href=\"home.php?act=logout\">{$lang['log_out']}</a></div>";
+	<a class=\"log_out_link\" href=\"home.php?act=logout\">{$lang['log_out']}</a>
+	</div>";
 } else {
 	$menu="<div class=\"top\"></div>";
 }

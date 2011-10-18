@@ -42,6 +42,7 @@ input[type="file"]{
     min-width:800px;
     color:white;
     text-align:center;
+    padding:5px;
     z-index:1;
     }
 
@@ -350,7 +351,12 @@ A.message_link:visited {color:black;}
 A.message_link:active {color:black;}
 A.message_link:hover {color:black;}
 
-A.top_link:link {color:white; text-decoration:none;}
+A.top_link:link {padding:5px;color:white; text-decoration:none;}
 A.top_link:visited {color:white;}
 A.top_link:active {color:white;}
 A.top_link:hover {color:white;}
+
+A.log_out_link:link {padding:5px; text-decoration:none; position:absolute; right:0px; top:0px;}
+A.log_out_link:visited {color:white;}
+A.log_out_link:active {color:white;}
+A.log_out_link:hover {color:white;}
