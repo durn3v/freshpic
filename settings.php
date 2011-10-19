@@ -206,10 +206,29 @@ if($_FILES['pic']['name'])
 	
 }
 
-	echo 	"<form enctype=\"multipart/form-data\" method=\"POST\">
-		{$lang['upload_profile_photo']}<br><input type=\"file\" name=\"pic\">
-		<input type=\"submit\" value=\"{$lang['submit']}\">
-		</form>";
+	echo 	"<table><tr><td valign=\"top\"><a href=\"?\">Settings</a><br><a href=\"?act=photo\">Profile photo</a></td><td>";
+	if($_GET['act']=='')
+	{
+		echo "<form>About you:<br><textarea cols=\"30\" name=\"about\"></textarea><br><input type=\"submit\" value=\"Save\"></form>";
+	}
+	if($_GET['act']=='photo')
+	{
+		echo 	"<form enctype=\"multipart/form-data\" method=\"POST\">
+			{$lang['upload_profile_photo']}<br><input type=\"file\" name=\"pic\">
+			<input type=\"submit\" value=\"{$lang['submit']}\">
+			</form>";
+	}
+	if(isset($_GET['about']))
+	{
+		$about=message($_GET['about']);
+		if($about!='')
+		{
+			$db->connect();
+			$db->action("UPDATE users SET about='{$about}' WHERE uid={$_SESSION['user_id']};");
+			$db->close();
+		}
+	}
+	echo "</td></tr></table>";
 
 echo $close;
 

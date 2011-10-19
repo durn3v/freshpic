@@ -1,10 +1,14 @@
 <?php
 session_start();
 include("../../config.php");
-function user($from_id) {
-$sql_from="SELECT * FROM users WHERE uid=".$from_id;
-$result_user=pg_query($sql_from) or die(pg_last_error());
-while ($from_user = pg_fetch_array($result_user)) { return $from_user['name']." ".$from_user['lastname']; }
+function user($from_id) 
+{
+	$sql_from="SELECT * FROM users WHERE uid=".$from_id;
+	$result_user=pg_query($sql_from) or die(pg_last_error());
+	while ($from_user = pg_fetch_array($result_user)) 
+	{ 
+		return array('name' => $from_user['name'],'lastname' => $from_user['lastname'], 'avatar' => $from_user['avatar']); 
+	}
 }
 if(isset($_SESSION['user_id']))
 {
@@ -41,11 +45,15 @@ if(isset($_SESSION['user_id']))
 	$db->action("SELECT * FROM photo_comments WHERE user_photo={$user_id} AND image='{$name}' ORDER BY uid");
 	if(pg_num_rows($db->result)!=0)
 	{
+	echo "<table>";
 		while($comment=pg_fetch_array($db->result))
 		{
 			$user=user($comment['user_id']);
-			echo "<p>{$user}<br>{$comment['comment']}</p>";
+			echo "<tr><td><img src=\"i/{$comment['user_id']}/{$user['avatar']}.jpg\"></td>
+			<td>{$user['name']} {$user['lastname']}
+			<br>{$comment['comment']}</td></tr>";
 		}
+	echo "</table>";
 	}
 	echo "</div>";
 	echo "<textarea id=\"comment\" cols=\"30\"></textarea><br><input onclick=\"comment()\" type=\"button\" value=\"send\">";

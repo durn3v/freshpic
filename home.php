@@ -8,10 +8,6 @@ $result_user=pg_query($sql_from) or die(pg_last_error());
 while ($from_user = pg_fetch_array($result_user)) { return $from_user['name']." ".$from_user['lastname']; }
 }
 
-echo $start;
-echo "<title>Home</title>";
-echo $after_title;
-
 if(isset($_COOKIE['remember']))
 {
 	if(!isset($_SESSION['user_id']))
@@ -19,6 +15,11 @@ if(isset($_COOKIE['remember']))
 		$_SESSION['user_id']=$_COOKIE['remember'];
 	}
 }
+
+echo $start;
+echo "<title>Home</title>";
+echo $after_title;
+
 if(isset($_POST['email']) && isset($_POST['pass']))
 {
 	$email=$_POST['email'];
@@ -123,17 +124,20 @@ if(isset($_SESSION['user_id']))
 			$lastname=$user['lastname'];
 			$online_time=$user['online_time'];
 			$avatar=$user['avatar'];
+			$about=$user['about'];
 			}
 		}
-		echo "<div class=\"left\">";
-		if($online_time+35>time()) echo "online <br>";
-		if($avatar!="nothing") echo "<img src=\"./s/{$_GET['user']}/{$avatar}.jpg\"><br>";
-		echo $name." ".$lastname;
-	}
+		echo "<div style=\"height:20px; border:1px solid; border-top:none;\">{$name} {$lastname}";
 		if($_GET['user']==$_SESSION['user_id'])
 		{ 
 			echo " ({$lang['that_is_you']})";	
-		} else
+		}
+		if($online_time+35>time()) echo " online";
+		echo "</div>";
+		echo "<table><tr><td valign=\"top\" width=\"200\">";
+		if($avatar!="nothing") echo "<img src=\"./s/{$_GET['user']}/{$avatar}.jpg\"><br>";
+	}
+		if($_GET['user']!=$_SESSION['user_id'])
 		{ 
 			echo "<br><a href=\"mail.php?act=write&to={$_GET['user']}\">{$lang['write_a_message']}</a>";
 			$db->action("SELECT * FROM followers WHERE who='".$_SESSION['user_id']."' AND whom='".$_GET['user']."'");
@@ -170,26 +174,13 @@ if(isset($_SESSION['user_id']))
 				echo "<a href=\"{$follower['who']}\">$user</a>\n";
 			}
 		}
-		echo "</div>";
+		echo "</td>";
 		
-		$db->action("SELECT * FROM albums WHERE user_id={$_GET['user']} ORDER BY seq");
-		echo "<div class=\"right\"><table>";
-		if(pg_num_rows($db->result)==0)
+		echo "<td valign=\"top\" width=\"500\">";
+		if($about!='')
 		{
-			echo "{$lang['no_albums']}";
-		} else {
-			while($album=pg_fetch_array($db->result))
-			{
-			$name=$album['name'];
-			$album_id=$album['album_id'];
-			$count=$album['count'];
-			$cover=$album['cover'];
-			echo "<tr><td><a href=\"albums.php?user={$_GET['user']}&album={$album_id}\"><img src=\"./i/{$_GET['user']}/{$cover}.jpg\"></a></td><td><a href=\"albums.php?user={$_GET['user']}&album={$album_id}\">{$name}</a></td></tr>";
-			}
+			echo "About me: {$about}<br>";
 		}
-		echo "</table></div>";
-		
-		echo "</div><div class=\"center\">";
 		if($_GET['user']==$_SESSION['user_id'])
 		{
 			echo "What's up:<br><form id=\"send\"><textarea id=\"message\" rows=\"2\" cols=\"35\"></textarea><br>
@@ -205,7 +196,24 @@ if(isset($_SESSION['user_id']))
 			}
 		}
 		echo "</div>";
-		echo "</div>";
+		echo "</td>";
+		
+		$db->action("SELECT * FROM albums WHERE user_id={$_GET['user']} ORDER BY seq LIMIT 2");
+		echo "<td valign=\"top\" width=\"200\"><table>";
+		if(pg_num_rows($db->result)==0)
+		{
+			echo "{$lang['no_albums']}";
+		} else {
+			while($album=pg_fetch_array($db->result))
+			{
+			$name=$album['name'];
+			$album_id=$album['album_id'];
+			$count=$album['count'];
+			$cover=$album['cover'];
+			echo "<tr><td><a href=\"albums.php?user={$_GET['user']}&album={$album_id}\"><img src=\"./i/{$_GET['user']}/{$cover}.jpg\"></a></td><td><a href=\"albums.php?user={$_GET['user']}&album={$album_id}\">{$name}</a></td></tr>";
+			}
+		}
+		echo "</table></td></tr></table>";
 }
 else
 {

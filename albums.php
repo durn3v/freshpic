@@ -6,6 +6,13 @@ if(!isset($_GET['act']) and !isset($_GET['user']) and !isset($_FILES['pic']) and
 {
 Header("Location: albums.php?user={$_SESSION['user_id']}");
 }
+if(isset($_GET['delete']))
+{
+	$db->connect();
+	$db->action("DELETE FROM albums WHERE user_id={$_SESSION['user_id']} AND album_id={$_GET['delete']}");
+	$db->action("DELETE FROM feed WHERE user_id={$_SESSION['user_id']} AND value2='{$_GET['delete']}'");
+	$db->close();
+}
 
 echo $start;
 echo "<title>{$lang['albums']}</title>";
@@ -16,25 +23,12 @@ function view(image) {";
 if(isset($_GET['album']))
 {
 $db->connect();
-		$db->action("SELECT name FROM images WHERE user_id={$_GET['user']} AND album_id={$_GET['album']}");
+		$db->action("SELECT name FROM images WHERE user_id={$_GET['user']} AND album_id={$_GET['album']} ORDER BY seq");
 		$i=0;
 		while($images=pg_fetch_array($db->result))
 		{
 			$image[]=$images['name'];
 			$i++;
-		}
-		
-		echo "var next = new Array();";
-		for($x=1; $x<=$i; $x++)
-		{
-			$back=$x-1;
-			if($x==$i)
-			{
-				echo "next['{$_GET['user']}/{$image[$back]}'] = '{$image[0]}';";
-			} else
-			{
-				echo "next['{$_GET['user']}/{$image[$back]}'] = '{$image[$x]}';";
-			}
 		}
 }
 echo "	$('#vis').css('display','inline');
@@ -125,6 +119,8 @@ function comment()
 		}  
 	});
 }
+
+
 $(document).ready(function(){
 // ---------
 $(\"#albums\").tableDnD({
@@ -146,7 +142,10 @@ $(\"#albums\").tableDnD({
 });
 // ---------
 });
-
+function delete()
+{
+$(\"#delete\").css('display','none');
+}
 	</script>";
 echo $after_scripts;
 echo "<div id=\"vis\" onclick=\"$('#vis').css('display','none'); $('#view').css('display','none'); location.href='#';\"></div>";
@@ -211,7 +210,16 @@ if(isset($_GET['user']))
 			$album_id=$album['album_id'];
 			$count=$album['count'];
 			$cover=$album['cover'];
-			echo "<tr id=\"{$i}\"><td><a href=\"?user={$_GET['user']}&album={$album_id}\"><img src=\"./i/{$_GET['user']}/{$cover}.jpg\"></a></td><td><a href=\"?user={$_GET['user']}&album={$album_id}\">{$name}</a></td></tr>";
+			echo "<tr id=\"{$i}\"><td><a href=\"?user={$_GET['user']}&album={$album_id}\"><img src=\"./i/{$_GET['user']}/{$cover}.jpg\"></a></td><td><a href=\"?user={$_GET['user']}&album={$album_id}\">{$name}</a><br>";
+			if($_GET['user']==$_SESSION['user_id'])
+			{
+				echo "<div id=\"delete{$album_id}\" onclick=\"$(this).css('display','none'); $('#sure{$album_id}').css('display','inline');\">
+				<a href=\"#\" style=\"font-size:12;\">remove</a></div>
+				<div id=\"sure{$album_id}\" style=\"font-size:12;display:none;\">
+				<a href=\"?delete={$album_id}\"style=\"font-size:12;\">yes</a>
+				<a onclick=\" $('#sure{$album_id}').css('display','none'); $('#delete{$album_id}').css('display','inline');\" style=\"font-size:12;\" href=\"#\">no</a>";
+			}
+			echo "</div></td></tr>";
 			$i++;
 			}
 		}
@@ -246,12 +254,13 @@ if(isset($_GET['user']))
 		$type = $_FILES['pic']['type'][$i];
 		if(is_uploaded_file($file))
 		{
+				$seq=$i+1;
 				$db->action("SELECT images FROM counts WHERE user_id={$_SESSION['user_id']}");
 				while($images=pg_fetch_array($db->result)) $uid=$images['images']+1;
 				$db->action("UPDATE counts SET images='{$uid}' WHERE user_id={$_SESSION['user_id']}");
 				$name = chr( rand(97, 122) ).chr( rand(97, 122) ).chr( rand(97, 122) ).chr( rand(97, 122) ).$uid;
 				if($i==0) $db->action("UPDATE albums SET cover='{$name}' WHERE user_id={$_SESSION['user_id']} AND album_id={$_POST['album_id']}");
-				$db->action("INSERT INTO images (user_id,album_id,name,seq) VALUES ({$_SESSION['user_id']}, {$_POST['album_id']}, '{$name}', {$i});");
+				$db->action("INSERT INTO images (user_id,album_id,name,seq) VALUES ({$_SESSION['user_id']}, {$_POST['album_id']}, '{$name}', {$seq});");
 				move_uploaded_file($file, "./p/{$_SESSION['user_id']}/{$name}.jpg");
 				imageresize("./i/{$_SESSION['user_id']}/{$name}.jpg","./p/{$_SESSION['user_id']}/{$name}.jpg",100,100,90, $type);
 				imageresize("./s/{$_SESSION['user_id']}/{$name}.jpg","./p/{$_SESSION['user_id']}/{$name}.jpg",800,600,90, $type);

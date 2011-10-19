@@ -1,19 +1,7 @@
 <?php
 session_start();
 include("../../config.php");
-function user($from_id) 
-{
-	$sql_from="SELECT * FROM users WHERE uid=".$from_id;
-	$result_user=pg_query($sql_from) or die(pg_last_error());
-	while ($from_user = pg_fetch_array($result_user)) { return $from_user['name']." ".$from_user['lastname']; }
-}
-function message($message)
-{
-	$str=array("\"","'","<",">");
-	$to_str=array("&quot;","&rsquo;","&lt;","&gt;");
-	$replace_message=trim(str_replace($str,$to_str,$message));
-	return preg_replace("#(https?|ftp)://\S+[^\s.,> )\];'\"!?]#",'<a href="\\0">\\0</a>',$replace_message);
-}
+
 if(isset($_SESSION['user_id']))
 {
 	$message=message($_GET['comment']);
@@ -22,11 +10,15 @@ if(isset($_SESSION['user_id']))
 	$db->action("SELECT * FROM photo_comments WHERE user_photo={$_GET['user_photo']} AND image='{$_GET['image']}' ORDER BY uid");
 	if(pg_num_rows($db->result)!=0)
 	{
+	echo "<table>";
 		while($comment=pg_fetch_array($db->result))
 		{
-			$user=user($comment['user_id']);
-			echo "<p>{$user}<br>{$comment['comment']}</p>";
+			$user=user_array($comment['user_id']);
+			echo "<tr><td><img src=\"i/{$comment['user_id']}/{$user['avatar']}.jpg\"></td>
+			<td>{$user['name']} {$user['lastname']}
+			<br>{$comment['comment']}</td></tr>";
 		}
+	echo "</table>";
 	}
 }
 $db->close();

@@ -153,4 +153,21 @@ $close= "</div><div class=\"lang\">
 	<a href=\"&lang=de\">Deutsch</a>
 	</div></body></html>";
 
+function user_array($from_id) 
+{
+	$sql_from="SELECT * FROM users WHERE uid=".$from_id;
+	$result_user=pg_query($sql_from) or die(pg_last_error());
+	while ($from_user = pg_fetch_array($result_user)) 
+	{ 
+		return array('name' => $from_user['name'],'lastname' => $from_user['lastname'], 'avatar' => $from_user['avatar']); 
+	}
+}
+function message($message)
+{
+	$str=array("\"","'","<",">");
+	$to_str=array("&quot;","&rsquo;","&lt;","&gt;");
+	$replace_message=trim(str_replace($str,$to_str,$message));
+	return preg_replace("#(https?|ftp)://\S+[^\s.,> )\];'\"!?]#",'<a href="\\0">\\0</a>',$replace_message);
+}
+
 ?>
