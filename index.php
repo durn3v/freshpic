@@ -1,5 +1,14 @@
 <?php
 session_start();
+if(isset($_COOKIE['remember']))
+{
+	if(!isset($_SESSION['user_id']))
+	{
+		$_SESSION['user_id']=$_COOKIE['remember'];
+		header("Location: home.php");
+		exit();
+	}
+}
 if(isset($_SESSION['user_id']))
 {
 	header("Location: home.php");
