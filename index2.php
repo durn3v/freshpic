@@ -33,7 +33,7 @@ echo 	"<form method=\"POST\" action=\"join.php\">
 	<tr><td collspan=\"2\">
 	<input type=\"hidden\" name=\"act\">
 	<input type=\"submit\" value=\"{$lang['registration']}\">
-	</td></tr></table></form>";
+	</form></td></tr></table>";
 
 echo "<div class=\"lang\">
 	<a href=\"&lang=ru\">Русский</a>

@@ -134,7 +134,7 @@ if(isset($_SESSION['user_id']))
 		}
 		if($online_time+35>time()) echo " online";
 		echo "</div>";
-		echo "<table><tr><td valign=\"top\" width=\"200\">";
+		echo "<table style=\"border-bottom:1px solid;\"><tr><td valign=\"top\" width=\"200\">";
 		if($avatar!="nothing") echo "<img src=\"./s/{$_GET['user']}/{$avatar}.jpg\"><br>";
 	}
 		if($_GET['user']!=$_SESSION['user_id'])
@@ -176,34 +176,36 @@ if(isset($_SESSION['user_id']))
 		}
 		echo "</td>";
 		
-		echo "<td valign=\"top\" width=\"500\">";
+		echo "<td valign=\"top\" width=\"500\" style=\"border-left:1px solid;border-right:1px solid;\">";
 		if($about!='')
 		{
-			echo "About me: {$about}<br>";
+			echo "{$lang['about_me']}: {$about}<br>";
 		}
 		if($_GET['user']==$_SESSION['user_id'])
 		{
-			echo "What's up:<br><form id=\"send\"><textarea id=\"message\" rows=\"2\" cols=\"35\"></textarea><br>
-			<input type=\"submit\" value=\"Send\" id=\"submit\"></form>";
+			echo "{$lang['whats_up']}:<br><form id=\"send\"><textarea id=\"message\" rows=\"2\" cols=\"35\"></textarea><br>
+			<input type=\"submit\" value=\"{$lang['send']}\" id=\"submit\"></form>";
 		}
 		$db->action("SELECT * FROM wall WHERE user_id={$_GET['user']} ORDER BY uid DESC");
-		echo "<div id=\"wall\">";
+		echo "<table id=\"wall\">";
+		$user=user_array($_GET['user']);
 		if(pg_num_rows($db->result)!=0)
 		{
 			while($wall=pg_fetch_array($db->result))
 			{
-				echo "{$wall['message']}<br>";
+				echo "<tr id=\"wall_message\"><td><img src=\"i/{$_GET['user']}/{$user['avatar']}.jpg\"></td><td>{$wall['message']}</td></tr>";
 			}
 		}
-		echo "</div>";
+		echo "</table>";
 		echo "</td>";
 		
-		$db->action("SELECT * FROM albums WHERE user_id={$_GET['user']} ORDER BY seq LIMIT 2");
+		$db->action("SELECT * FROM albums WHERE user_id={$_GET['user']} ORDER BY seq DESC LIMIT 5");
 		echo "<td valign=\"top\" width=\"200\"><table>";
 		if(pg_num_rows($db->result)==0)
 		{
 			echo "{$lang['no_albums']}";
 		} else {
+			echo $lang['albums'];
 			while($album=pg_fetch_array($db->result))
 			{
 			$name=$album['name'];

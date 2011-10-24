@@ -2,11 +2,6 @@
 session_start();
 include("config.php");
 
-function user($from_id) {
-	$sql_from="SELECT * FROM users WHERE uid=".$from_id;
-	$result_user=pg_query($sql_from) or die(pg_last_error());
-	while ($from_user = pg_fetch_array($result_user)) { return $from_user['name']." ".$from_user['lastname']; }
-}
 function album($id,$album) {
 	$sql="SELECT * FROM albums WHERE user_id={$id} AND album_id={$album}";
 	$result=pg_query($sql) or die(pg_last_error());
@@ -37,20 +32,21 @@ echo $after_scripts;
 	$db->action("SELECT * FROM feed WHERE {$users} ORDER BY uid DESC");
 	if(pg_num_rows($db->result)!=0)
 	{
+	echo "<table>";
 		while($feed=pg_fetch_array($db->result))
 		{
-			$name=user($feed['user_id']);
+			$user=user_array($feed['user_id']);
 			if($feed['type']=='photos') 
 			{
 			$album=album($feed['user_id'],$feed['value2']); 
-			echo "{$name} added {$feed['value1']} photos to album <a href=\"albums.php?user={$feed['user_id']}&album={$feed['value2']}\">{$album}</a>";
+			echo "<tr><td><a href=\"{$feed['user_id']}\"><img src=\"i/{$feed['user_id']}/{$user['avatar']}.jpg\"></a></td><td>{$user['name']} {$user['lastname']}<br>added {$feed['value1']} photos to album <a href=\"albums.php?user={$feed['user_id']}&album={$feed['value2']}\">{$album}</a></td></tr>";
 			}
 			if($feed['type']=='status') 
 			{
-			echo "{$name}: {$feed['value1']}";
+			echo "<tr><td><a href=\"{$feed['user_id']}\"><img src=\"i/{$feed['user_id']}/{$user['avatar']}.jpg\"></a></td><td><p>{$user['name']} {$user['lastname']}</p>{$feed['value1']}</td></tr>";
 			}
-			echo "<br>";
 		}
+	echo "</table>";
 	}
 	$db->close();
 echo $close;

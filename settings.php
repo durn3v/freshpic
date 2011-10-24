@@ -17,6 +17,14 @@ if($_FILES['pic']['name']) {
 		list($width, $height, $type) = getimagesize("./s/{$_SESSION['user_id']}/{$name}.jpg");
 	}
 }
+if(isset($_GET['about']))
+	{
+		$about=message($_GET['about']);
+		$db->connect();
+		$db->action("UPDATE users SET about='{$about}' WHERE uid={$_SESSION['user_id']};");
+		$db->close();
+		$about_=TRUE;
+	}
 
 echo $start;
 echo "<style>
@@ -209,7 +217,15 @@ if($_FILES['pic']['name'])
 	echo 	"<table><tr><td valign=\"top\"><a href=\"?\">Settings</a><br><a href=\"?act=photo\">Profile photo</a></td><td>";
 	if($_GET['act']=='')
 	{
-		echo "<form>About you:<br><textarea cols=\"30\" name=\"about\"></textarea><br><input type=\"submit\" value=\"Save\"></form>";
+		$db->connect();
+		$db->action("SELECT about FROM users WHERE uid={$_SESSION['user_id']};");
+		while($user=pg_fetch_array($db->result)) $about=$user['about'];
+		$db->close();
+		echo "<form>{$lang['about_me']}:<br><textarea cols=\"30\" name=\"about\">$about</textarea><br><input type=\"submit\" value=\"{$lang['save']}\"></form>";
+		if($about_==TRUE)
+		{
+			echo "{$lang['saved']}";
+		}
 	}
 	if($_GET['act']=='photo')
 	{
@@ -217,16 +233,6 @@ if($_FILES['pic']['name'])
 			{$lang['upload_profile_photo']}<br><input type=\"file\" name=\"pic\">
 			<input type=\"submit\" value=\"{$lang['submit']}\">
 			</form>";
-	}
-	if(isset($_GET['about']))
-	{
-		$about=message($_GET['about']);
-		if($about!='')
-		{
-			$db->connect();
-			$db->action("UPDATE users SET about='{$about}' WHERE uid={$_SESSION['user_id']};");
-			$db->close();
-		}
 	}
 	echo "</td></tr></table>";
 

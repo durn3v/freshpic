@@ -3,22 +3,22 @@
 //define $lang with value from cookie or, if cookie does not contain it yet, over geoip	
 if(isset($_COOKIE['language']))
 {
-	$language = $_COOKIE['language'];
+	define("USER_LANGUAGE",$_COOKIE['language']);
 }
 else
 {
 	$code = strtolower(geoip_country_code_by_name($_SERVER['REMOTE_ADDR']));
 	if($code == "ru")
 	{
-		$language = "ru";
+		define("USER_LANGUAGE","ru");
 	}
 	elseif($code == "de")
 	{
-		$language = "de";
+		define("USER_LANGUAGE","de");
 	}
 	else
 	{
-		$language = "en";
+		define("USER_LANGUAGE","en");
 	}
 	setcookie("language", $language, time()+3600*24*30, "/");
 }
@@ -40,23 +40,18 @@ elseif($_GET['lang']=="de")
 	header("Location: {$_SERVER['HTTP_REFERER']}");
 }
 
-include("languages/".$language.".php");
+require_once("languages/".USER_LANGUAGE.".php");
 
-$hostname = "freshpic.org";
-$dbhost = "localhost";
-$dbname = "freshpic";
-$dbuser = "freshpic";
-$dbpass = "GaopI4";
+define("HOST_NAME","freshpic.org");
+define("DB_HOST","localhost");
+define("DB_NAME","freshpic");
+define("DB_USER","freshpic");
+define("DB_PASS","GaopI4");
 
 class db {
 
 function connect() {
-	$hostname = "freshpic.org";
-	$dbhost = "localhost";
-	$dbname = "freshpic";
-	$dbuser = "freshpic";
-	$dbpass = "GaopI4";
-	$this->connect=pg_connect("host=".$dbhost." dbname=".$dbname." user=".$dbuser." password=".$dbpass);
+	$this->connect=pg_connect("host=".DB_HOST." dbname=".DB_NAME." user=".DB_USER." password=".DB_PASS);
 	}
 function action($sql) {
 	$this->sql=$sql;
@@ -71,6 +66,13 @@ function close() {
 }
 
 $db=new db;
+
+function db_connect() {
+	return pg_connect("host=".DB_HOST." dbname=".DB_NAME." user=".DB_USER." password=".DB_PASS);
+}
+function db_close($connect) {
+	pg_close($connect);
+}
 
 if(isset($_SESSION['user_id'])){
 $db->connect();
@@ -152,7 +154,6 @@ $close= "</div><div class=\"lang\">
 	<a href=\"&lang=en\">English</a>
 	<a href=\"&lang=de\">Deutsch</a>
 	</div></body></html>";
-
 function user_array($from_id) 
 {
 	$sql_from="SELECT * FROM users WHERE uid=".$from_id;

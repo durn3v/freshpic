@@ -6,13 +6,13 @@ if(!isset($_GET['act']) and !isset($_GET['user']) and !isset($_FILES['pic']) and
 {
 Header("Location: albums.php?user={$_SESSION['user_id']}");
 }
-if(isset($_GET['delete']))
+/*if(isset($_GET['delete']))
 {
 	$db->connect();
 	$db->action("DELETE FROM albums WHERE user_id={$_SESSION['user_id']} AND album_id={$_GET['delete']}");
 	$db->action("DELETE FROM feed WHERE user_id={$_SESSION['user_id']} AND value2='{$_GET['delete']}'");
 	$db->close();
-}
+}*/
 
 echo $start;
 echo "<title>{$lang['albums']}</title>";
@@ -142,10 +142,6 @@ $(\"#albums\").tableDnD({
 });
 // ---------
 });
-function delete()
-{
-$(\"#delete\").css('display','none');
-}
 	</script>";
 echo $after_scripts;
 echo "<div id=\"vis\" onclick=\"$('#vis').css('display','none'); $('#view').css('display','none'); location.href='#';\"></div>";
