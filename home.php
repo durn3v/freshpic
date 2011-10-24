@@ -1,12 +1,7 @@
 <?php
 session_start();
 include_once("config.php");
-
-function user($from_id) {
-$sql_from="SELECT * FROM users WHERE uid=".$from_id;
-$result_user=pg_query($sql_from) or die(pg_last_error());
-while ($from_user = pg_fetch_array($result_user)) { return $from_user['name']." ".$from_user['lastname']; }
-}
+include_once("includes/wall.php");
 
 if(isset($_COOKIE['remember']))
 {
@@ -156,8 +151,8 @@ if(isset($_SESSION['user_id']))
 			echo " ".$following['following']. " :";
 			$db->action("SELECT * FROM followers WHERE who='".$_GET['user']."'");
 			while($following_user=pg_fetch_array($db->result)) {
-			$user=user($following_user['whom']);
-			echo "<a href=\"{$following_user['whom']}\">$user</a>\n";
+			$user=user_array($following_user['whom']);
+			echo "<a href=\"{$following_user['whom']}\">{$user['name']} {$user['lastname']}</a>\n";
 			}
 		}
 		
@@ -170,8 +165,8 @@ if(isset($_SESSION['user_id']))
 			$db->action("SELECT * FROM followers WHERE whom='".$_GET['user']."'");
 			while($follower=pg_fetch_array($db->result)) 
 			{
-				$user=user($follower['who']);
-				echo "<a href=\"{$follower['who']}\">$user</a>\n";
+				$user=user_array($follower['who']);
+				echo "<a href=\"{$follower['who']}\">{$user['name']} {$user['lastname']}</a>\n";
 			}
 		}
 		echo "</td>";
@@ -188,14 +183,9 @@ if(isset($_SESSION['user_id']))
 		}
 		$db->action("SELECT * FROM wall WHERE user_id={$_GET['user']} ORDER BY uid DESC");
 		echo "<table id=\"wall\">";
-		$user=user_array($_GET['user']);
-		if(pg_num_rows($db->result)!=0)
-		{
-			while($wall=pg_fetch_array($db->result))
-			{
-				echo "<tr id=\"wall_message\"><td><img src=\"i/{$_GET['user']}/{$user['avatar']}.jpg\"></td><td>{$wall['message']}</td></tr>";
-			}
-		}
+		
+		print_wall($_GET['user']);
+		
 		echo "</table>";
 		echo "</td>";
 		
