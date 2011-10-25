@@ -1,4 +1,6 @@
 <?php
+if(!function_exists("user_array"))
+{
 function user_array($from_id) 
 {
 	$sql_from="SELECT * FROM users WHERE uid=".$from_id;
@@ -7,5 +9,6 @@ function user_array($from_id)
 	{ 
 		return array('name' => $from_user['name'],'lastname' => $from_user['lastname'], 'avatar' => $from_user['avatar']); 
 	}
+}
 }
 ?>

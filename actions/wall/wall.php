@@ -1,7 +1,7 @@
 <?php
 session_start();
-include("../../config.php");
-include("../../includes/wall.php");
+include_once("../../config.php");
+include_once("../../includes/wall.php");
 if(isset($_SESSION['user_id']))
 {
 	$db->connect();

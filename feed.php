@@ -1,6 +1,7 @@
 <?php
 session_start();
-include("config.php");
+include_once("config.php");
+include_once("includes/user.php");
 
 function album($id,$album) {
 	$sql="SELECT * FROM albums WHERE user_id={$id} AND album_id={$album}";

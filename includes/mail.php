@@ -1,5 +1,5 @@
 <?php
-include("/var/www/user.php");
+include("user.php");
 function print_messages($user_id, $act="inbox") {
 	
 	if($act=="inbox") {
@@ -43,5 +43,12 @@ function print_messages($user_id, $act="inbox") {
 			$i++;
 		}
 	}
+}
+function message($message)
+{
+	$str=array("\"","'","<",">");
+	$to_str=array("&quot;","&rsquo;","&lt;","&gt;");
+	$replace_message=trim(str_replace($str,$to_str,$message));
+	return preg_replace("#(https?|ftp)://\S+[^\s.,> )\];'\"!?]#",'<a href="\\0">\\0</a>',$replace_message);
 }
 ?>

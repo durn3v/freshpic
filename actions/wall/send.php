@@ -1,19 +1,15 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors',true);
+ini_set('html_errors',true);
+ini_set('error_reporting',E_ALL ^ E_NOTICE);
 session_start();
-include("../../config.php");
-function message($message)
-{
-	$str=array("\"","'","<",">");
-	$to_str=array("&quot;","&rsquo;","&lt;","&gt;");
-	$replace_message=str_replace($str,$to_str,$message);
-	return preg_replace("#(https?|ftp)://\S+[^\s.,> )\];'\"!?]#",'<a href="\\0">\\0</a>',$replace_message);
-}
+include_once("../../config.php");
+include_once("../../includes/wall.php");
 if(isset($_SESSION['user_id']))
 {
-	$message=message($_POST['message']);
 	$db->connect();
-	$db->action("INSERT INTO wall (user_id,message) VALUES ({$_SESSION['user_id']},'{$message}');");
-	$db->action("INSERT INTO feed (user_id,type,value1) VALUES ({$_SESSION['user_id']}, 'status', '{$message}');");
+	send_status($_POST['message']);
 	$db->close();
 }
 ?>

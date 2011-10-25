@@ -2,6 +2,7 @@
 session_start();
 include_once("config.php");
 include_once("includes/wall.php");
+include_once("includes/mail.php");
 
 if(isset($_COOKIE['remember']))
 {
@@ -76,7 +77,9 @@ $(document).ready(function(){
 function wall()
 	{
 		$.ajax({
-			url: \"actions/wall/wall.php\",
+			type: \"POST\",
+			url: \"/actions.php\",
+			data: \"ajax=wall\",
 			cache: false,
 			success: function(html) {
 			$(\"#wall\").html(html);
@@ -102,7 +105,6 @@ $('#send').submit(function(){
                 return false;  
             }); });</script>";
 echo $after_scripts;
-
 
 if(isset($_SESSION['user_id']))
 {
@@ -181,7 +183,7 @@ if(isset($_SESSION['user_id']))
 			echo "{$lang['whats_up']}:<br><form id=\"send\"><textarea id=\"message\" rows=\"2\" cols=\"35\"></textarea><br>
 			<input type=\"submit\" value=\"{$lang['send']}\" id=\"submit\"></form>";
 		}
-		$db->action("SELECT * FROM wall WHERE user_id={$_GET['user']} ORDER BY uid DESC");
+		
 		echo "<table id=\"wall\">";
 		
 		print_wall($_GET['user']);
