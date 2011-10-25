@@ -13,5 +13,12 @@ switch($ajax) {
 		$db->free();
 		$db->close();
 	break;
+	
+	case "wallsend":
+		include_once("includes/wall.php");
+		$db->connect();
+		send_status($_POST['message']);
+		$db->close();
+	break;
 }
 ?>

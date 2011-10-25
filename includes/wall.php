@@ -1,16 +1,18 @@
 <?php
-ini_set("display_errors","1");
-ini_set("display_startup_errors","1");
-ini_set('error_reporting', E_ALL);
 include_once("user.php");
 function print_wall($user_id) {
-	$result = pg_query("SELECT * FROM wall WHERE user_id={$user_id} ORDER BY uid DESC") or die(pg_last_error());
+	$result = pg_query("SELECT * FROM wall WHERE user_id={$user_id} ORDER BY uid DESC LIMIT 10") or die(pg_last_error());
 	$user=user_array($user_id);
 		if(pg_num_rows($result)!=0)
 		{
+			$i=0;
 			while($wall=pg_fetch_array($result))
 			{
-				echo "<tr id=\"wall_message\"><td><img src=\"i/{$user_id}/{$user['avatar']}.jpg\"></td><td>{$wall['message']}</td></tr>";
+				if($i==0){
+				 	$wall['message']="<b>{$wall['message']}</b>";
+				}
+				echo "<tr id=\"wall_message\"><td><img src=\"i/{$user_id}/{$user['avatar']}.jpg\"></td><td>{$b}{$wall['message']}</td></tr>";
+				$i++;
 			}
 		}
 }

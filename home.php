@@ -93,7 +93,7 @@ $('#send').submit(function(){
 			$.ajax({  
 			type: \"POST\",  
 			url: \"/actions/wall/send.php\",  
-			data: \"message=\"+$(\"#message\").val(),  
+			data: \"ajax=wallsend&message=\"+$(\"#message\").val(),  
 			success: function(html){
 			$(\"#content\").html(html);
 			wall();
