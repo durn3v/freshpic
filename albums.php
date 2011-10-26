@@ -72,7 +72,7 @@ function view2(image)
 			{
 				$(\"#view\").html(html);
 				$('#vis').css('display','inline');
-				$('#view').css('display','inline');
+				if($('#view').css('display')=='inline') {} else $('#view').css('display','inline');
 			}
 		}
 	});
@@ -227,7 +227,7 @@ if(isset($_GET['user']))
 		for($x=0; $x<$i; $x++)
 		{
 		if($x % 4 === 0) echo "<br>";
-			echo "<a href=\"#!{$image[$x]}\"><img src=\"./i/{$_GET['user']}/{$image[$x]}.jpg\"></a>";
+			echo "<a href=\"#!{$image[$x]}\" onclick=\"if(navigator.userAgent.toLowerCase().indexOf('firefox/3.5')!=-1) view2('{$image[$x]}')\"><img src=\"./i/{$_GET['user']}/{$image[$x]}.jpg\"></a>";
 		}
 		
 		echo "<div id=\"view\"></div>";

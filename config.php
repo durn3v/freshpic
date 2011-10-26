@@ -1,5 +1,12 @@
 <?php
 
+if(isset($_COOKIE['remember']))
+{
+	if(!isset($_SESSION['user_id']))
+	{
+		$_SESSION['user_id']=$_COOKIE['remember'];
+	}
+}
 //define $lang with value from cookie or, if cookie does not contain it yet, over geoip	
 if(isset($_COOKIE['language']))
 {

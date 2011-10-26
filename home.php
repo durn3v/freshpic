@@ -4,14 +4,6 @@ include_once("config.php");
 include_once("includes/wall.php");
 include_once("includes/mail.php");
 
-if(isset($_COOKIE['remember']))
-{
-	if(!isset($_SESSION['user_id']))
-	{
-		$_SESSION['user_id']=$_COOKIE['remember'];
-	}
-}
-
 echo $start;
 echo "<title>Home</title>";
 echo $after_title;
@@ -108,22 +100,30 @@ echo $after_scripts;
 
 if(isset($_SESSION['user_id']))
 {
-	if(isset($_GET['user']))
+	if(is_numeric($_GET['user']))
 	{
 		$db->connect();
 		$db->action("SELECT * FROM users WHERE uid='".$_GET['user']."'");
 		if(pg_num_rows($db->result)==0) {
-			header("Loaction: home.php");
+			$user_shows=FALSE;
 		} else {
+			$user_show=TRUE;
+			
 			while ($user = pg_fetch_array($db->result))
 			{
-			$name=$user['name'];
-			$lastname=$user['lastname'];
-			$online_time=$user['online_time'];
-			$avatar=$user['avatar'];
-			$about=$user['about'];
+				$name=$user['name'];
+				$lastname=$user['lastname'];
+				$online_time=$user['online_time'];
+				$avatar=$user['avatar'];
+				$about=$user['about'];
 			}
 		}
+	} else {
+	$user_show=FALSE;
+	}
+	
+	if($user_show==TRUE)
+	{
 		echo "<div style=\"height:20px; border:1px solid; border-top:none;\">{$name} {$lastname}";
 		if($_GET['user']==$_SESSION['user_id'])
 		{ 
@@ -133,7 +133,6 @@ if(isset($_SESSION['user_id']))
 		echo "</div>";
 		echo "<table style=\"border-bottom:1px solid;\"><tr><td valign=\"top\" width=\"200\">";
 		if($avatar!="nothing") echo "<img src=\"./s/{$_GET['user']}/{$avatar}.jpg\"><br>";
-	}
 		if($_GET['user']!=$_SESSION['user_id'])
 		{ 
 			echo "<br><a href=\"mail.php?act=write&to={$_GET['user']}\">{$lang['write_a_message']}</a>";
@@ -208,6 +207,9 @@ if(isset($_SESSION['user_id']))
 			}
 		}
 		echo "</table></td></tr></table>";
+	} else {
+	echo "USER DOES NOT EXIST";
+	}
 }
 else
 {
