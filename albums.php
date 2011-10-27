@@ -9,11 +9,16 @@ Header("Location: albums.php?user={$_SESSION['user_id']}");
 if(isset($_GET['delete']))
 {
 	$db->connect();
-	$db->action("DELETE FROM albums WHERE user_id={$_SESSION['user_id']} AND album_id={$_GET['delete']}");
+	$db->action("UPDATE albums SET delete=TRUE WHERE user_id={$_SESSION['user_id']} AND album_id={$_GET['delete']}");
 	$db->action("DELETE FROM feed WHERE user_id={$_SESSION['user_id']} AND value2='{$_GET['delete']}'");
 	$db->close();
 }
-
+if(isset($_GET['idelete']))
+{
+	$db->connect();
+	$db->action("UPDATE images SET delete=TRUE WHERE user_id={$_SESSION['user_id']} AND name='{$_GET['idelete']}'");
+	$db->close();
+}
 echo $start;
 echo "<title>{$lang['albums']}</title>";
 echo $after_title;
@@ -23,7 +28,7 @@ function view(image) {";
 if(isset($_GET['album']))
 {
 $db->connect();
-		$db->action("SELECT name FROM images WHERE user_id={$_GET['user']} AND album_id={$_GET['album']} ORDER BY seq");
+		$db->action("SELECT name FROM images WHERE user_id={$_GET['user']} AND album_id={$_GET['album']} AND delete=FALSE ORDER BY seq");
 		$i=0;
 		while($images=pg_fetch_array($db->result))
 		{
@@ -191,7 +196,7 @@ if(isset($_GET['user']))
 	if(!isset($_GET['album']))
 	{
 		$db->connect();
-		$db->action("SELECT * FROM albums WHERE user_id={$_GET['user']} ORDER BY seq");
+		$db->action("SELECT * FROM albums WHERE user_id={$_GET['user']} AND delete=FALSE ORDER BY seq");
 		echo "<table id=\"albums\">";
 		if(pg_num_rows($db->result)==0)
 		{
@@ -227,6 +232,7 @@ if(isset($_GET['user']))
 		for($x=0; $x<$i; $x++)
 		{
 		if($x % 4 === 0) echo "<br>";
+		if($_GET['user']==$_SESSION['user_id'] and isset($_GET['edit'])) echo "<a href=\"?user={$_SESSION['user_id']}&album={$album_id}&idelete={$image[$x]}\">delete</a>";
 			echo "<a href=\"#!{$image[$x]}\" onclick=\"if(navigator.userAgent.toLowerCase().indexOf('firefox/3.5')!=-1) view2('{$image[$x]}')\"><img src=\"./i/{$_GET['user']}/{$image[$x]}.jpg\"></a>";
 		}
 		
