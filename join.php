@@ -7,7 +7,8 @@ echo $after_scripts;
 
 if(isset($_SESSION['user_id']))
 {
-//what is in there???
+header("Location: /{$_SESSION['user_id']}");
+exit();
 }
 else
 {

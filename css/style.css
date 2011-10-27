@@ -295,8 +295,8 @@ p#flags {
 }
 #vis {
 	position:fixed;
-	background-color: black;
-	opacity: 0.5;
+	background-color: white;
+	opacity: 0.7;
 	top:0;
 	bottom:0;
 	left:0;
@@ -306,16 +306,16 @@ p#flags {
 	z-index:2;
 }
 #view {
-position:absolute;
-top:2px;
-left:150px;
-right:150px;
-min-width: 550px;
-background-color:white;
-border: 1px solid;
-display:none;
-text-align:center;
-z-index:2;
+	position:absolute;
+	top:2px;
+	left:150px;
+	right:150px;
+	min-width: 550px;
+	background-color:white;
+	border: 1px solid;	
+	display:none;
+	text-align:center;
+	z-index:2;
 }
 .lang {
 	font-size:10;
@@ -345,6 +345,12 @@ z-index:2;
 .center {
   margin:0 200px;
   padding:5px;
+}
+#message_to {
+position:absolute;
+margin:0 auto;
+	background-color:white;
+	border: 1px solid;
 }
 
 A.message_link:link {color:black; text-decoration:none;}

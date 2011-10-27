@@ -95,7 +95,21 @@ $('#send').submit(function(){
 			$('input[type=submit]', this).removeAttr('disabled');
                 }
                 return false;  
-            }); });</script>";
+            });
+$('#send_message').submit(function(){
+				$('input[type=submit]', this).attr('disabled', 'disabled'); 
+                $.ajax({  
+                    type: \"POST\",  
+                    url: \"/actions/messages/send_message.php\",  
+                    data: \"&to={$_GET['user']}&subject=\"+$(\"#subject\").val()+\"&message=\"+$(\"#message\").val(),  
+                    success: function(html){
+						$(\"#message_to\").css(\"display\", \"none\");  
+                    }  
+                });
+                $('input[type=submit]', this).removeAttr('disabled'); 
+                return false;  
+            });
+            });</script>";
 echo $after_scripts;
 
 if(isset($_SESSION['user_id']))
@@ -124,6 +138,15 @@ if(isset($_SESSION['user_id']))
 	
 	if($user_show==TRUE)
 	{
+		echo "<div id=\"message_to\" style=\"position: absolute; margin:0 auto;display:none;\">";
+		echo "<form id=\"send_message\">
+		<a href=\"#\" style=\"float:right;\" onclick=\"$('#message_to').css('display', 'none');\">close</a>
+		To: {$name} {$lastname}<br>
+		Subject: <input type=\"text\" id=\"subject\"><br>
+		Message: <textarea id=\"message\"></textarea><br>
+		<input type=\"submit\" value=\"Send\">
+		</form>";
+		echo "</div>";
 		echo "<div style=\"height:20px; border:1px solid; border-top:none;\">{$name} {$lastname}";
 		if($_GET['user']==$_SESSION['user_id'])
 		{ 
@@ -135,7 +158,7 @@ if(isset($_SESSION['user_id']))
 		if($avatar!="nothing") echo "<img src=\"./s/{$_GET['user']}/{$avatar}.jpg\"><br>";
 		if($_GET['user']!=$_SESSION['user_id'])
 		{ 
-			echo "<br><a href=\"mail.php?act=write&to={$_GET['user']}\">{$lang['write_a_message']}</a>";
+			echo "<br><a href=\"#send\" onclick=\"$('#message_to').css('display', 'inline');\">{$lang['write_a_message']}</a>";
 			$db->action("SELECT * FROM followers WHERE who='".$_SESSION['user_id']."' AND whom='".$_GET['user']."'");
 			echo "<br>";
 			if(pg_num_rows($db->result)==0) {
