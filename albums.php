@@ -20,7 +20,11 @@ if(isset($_GET['delete']))
 if(isset($_GET['idelete']))
 {
 	$db->connect();
+	$db->action("SELECT seq FROM images WHERE user_id={$_SESSION['user_id']} AND name='{$_GET['idelete']}'");
+	while($result=pg_fetch_array($db->result)) $seq=$result['seq'];
 	$db->action("UPDATE images SET delete=TRUE WHERE user_id={$_SESSION['user_id']} AND name='{$_GET['idelete']}'");
+	$db->action("UPDATE images SET seq=0 WHERE user_id={$_SESSION['user_id']} AND name='{$_GET['idelete']}'");
+	$db->action("UPDATE images SET seq=seq-1 WHERE user_id={$_SESSION['user_id']} AND album_id='{$_GET['album']}' AND seq>{$seq};");
 	$db->close();
 	Header("Location: albums.php?user={$_GET['user']}&album={$_GET['album']}");
 	exit();
