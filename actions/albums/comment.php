@@ -1,6 +1,8 @@
 <?php
 session_start();
-include("../../config.php");
+include_once("../../config.php");
+include_once("../../includes/user.php");
+include_once("../../includes/mail.php");
 
 if(isset($_SESSION['user_id']))
 {

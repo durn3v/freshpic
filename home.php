@@ -172,11 +172,11 @@ if(isset($_SESSION['user_id']))
 		if($following['following']>0) 
 		{
 			echo "<br>".$lang['following_this_people'];
-			echo " ".$following['following']. " :";
+			echo " ".$following['following']. " :<br>";
 			$db->action("SELECT * FROM followers WHERE who='".$_GET['user']."'");
 			while($following_user=pg_fetch_array($db->result)) {
-			$user=user_array($following_user['whom']);
-			echo "<a href=\"{$following_user['whom']}\">{$user['name']} {$user['lastname']}</a>\n";
+				$user=user_array($following_user['whom']);
+				echo "<a href=\"{$following_user['whom']}\"><img src=\"i/{$following_user['whom']}/{$user['avatar']}\"></a>";
 			}
 		}
 		
@@ -185,12 +185,12 @@ if(isset($_SESSION['user_id']))
 		if($followers['followers']>0) 
 		{
 			echo "<br>".$lang['followers'];
-			echo " ".$followers['followers']. " :";
+			echo " ".$followers['followers']. " :<br>";
 			$db->action("SELECT * FROM followers WHERE whom='".$_GET['user']."'");
 			while($follower=pg_fetch_array($db->result)) 
 			{
 				$user=user_array($follower['who']);
-				echo "<a href=\"{$follower['who']}\">{$user['name']} {$user['lastname']}</a>\n";
+				echo "<a href=\"{$follower['who']}\"><img src=\"i/{$follower['who']}/{$user['avatar']}\"></a>";
 			}
 		}
 		echo "</td>";
@@ -213,13 +213,13 @@ if(isset($_SESSION['user_id']))
 		echo "</table>";
 		echo "</td>";
 		
-		$db->action("SELECT * FROM albums WHERE user_id={$_GET['user']} ORDER BY seq DESC LIMIT 5");
+		$db->action("SELECT * FROM albums WHERE user_id={$_GET['user']} AND delete=FALSE ORDER BY seq DESC LIMIT 5");
 		echo "<td valign=\"top\" width=\"200\"><table>";
 		if(pg_num_rows($db->result)==0)
 		{
 			echo "{$lang['no_albums']}";
 		} else {
-			echo $lang['albums'];
+			echo "<a href=\"albums.php?user={$_GET['user']}\">{$lang['albums']}</a>";
 			while($album=pg_fetch_array($db->result))
 			{
 			$name=$album['name'];

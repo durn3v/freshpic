@@ -1,6 +1,10 @@
 <?php
+//ini_set("display_errors","1");
+//ini_set("display_startup_errors","1");
+//ini_set('error_reporting', E_ALL);
 session_start();
 include("config.php");
+include("includes/user.php");
 
 if(!isset($_GET['act']) and !isset($_GET['user']) and !isset($_FILES['pic']) and isset($_SESSION['user_id']))
 {
@@ -18,6 +22,8 @@ if(isset($_GET['idelete']))
 	$db->connect();
 	$db->action("UPDATE images SET delete=TRUE WHERE user_id={$_SESSION['user_id']} AND name='{$_GET['idelete']}'");
 	$db->close();
+	Header("Location: albums.php?user={$_GET['user']}&album={$_GET['album']}");
+	exit();
 }
 echo $start;
 echo "<title>{$lang['albums']}</title>";
@@ -193,10 +199,13 @@ if(isset($_SESSION['user_id']))
 
 if(isset($_GET['user']))
 {
+	$db->connect();
+	$user=user_array($_GET['user']);
+	
 	if(!isset($_GET['album']))
 	{
-		$db->connect();
 		$db->action("SELECT * FROM albums WHERE user_id={$_GET['user']} AND delete=FALSE ORDER BY seq");
+		echo "<div style=\"height:20px; border:1px solid; border-top:none;\"><a href=\"{$_GET['user']}\">{$user['name']} {$user['lastname']}</a> -> {$lang['albums']}</div>";
 		echo "<table id=\"albums\">";
 		if(pg_num_rows($db->result)==0)
 		{
@@ -225,20 +234,22 @@ if(isset($_GET['user']))
 			}
 		}
 		echo "</table>";
-		$db->close();
 	} else {
-		
+		$db->action("SELECT name FROM albums WHERE user_id={$_GET['user']} AND album_id={$_GET['album']};");
+		while($album=pg_fetch_array($db->result)) $name=$album['name'];
+		echo "<div style=\"height:20px; border:1px solid; border-top:none;\"><a href=\"{$_GET['user']}\">{$user['name']} {$user['lastname']}</a> -> <a href=\"albums.php?user={$_GET['user']}\">{$lang['albums']}</a> -> {$name}</div>";
 		//////////////////////////////
 		for($x=0; $x<$i; $x++)
 		{
-		if($x % 4 === 0) echo "<br>";
-		if($_GET['user']==$_SESSION['user_id'] and isset($_GET['edit'])) echo "<a href=\"?user={$_SESSION['user_id']}&album={$album_id}&idelete={$image[$x]}\">delete</a>";
+		if($x % 4 === 0 and $x!=0) echo "<br>";
+		if($_GET['user']==$_SESSION['user_id'] and isset($_GET['edit'])) echo "<a href=\"?user={$_SESSION['user_id']}&album={$_GET['album']}&idelete={$image[$x]}\">delete</a>";
 			echo "<a href=\"#!{$image[$x]}\" onclick=\"if(navigator.userAgent.toLowerCase().indexOf('firefox/3.5')!=-1) view2('{$image[$x]}')\"><img src=\"./i/{$_GET['user']}/{$image[$x]}.jpg\"></a>";
 		}
 		
 		echo "<div id=\"view\"></div>";
-		$db->close();
 	}
+	
+	$db->close();
 } else {
 	if($_FILES['pic'])
 	{

@@ -27,7 +27,7 @@ else
 	{
 		define("USER_LANGUAGE","en");
 	}
-	setcookie("language", $language, time()+3600*24*30, "/");
+	setcookie("language", USER_LANGUAGE, time()+3600*24*30, "/");
 }
 
 //if pressed flag image
