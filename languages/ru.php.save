@@ -9,25 +9,8 @@ $lang = array(
 	'new_message' => "Новое сообщение!",
 	'new_messages' => "Новые сообщения!",
 	'delete' => "Удалить",
-#			#
-#	Albums		#
-#			#
-	'albums' => 'Альбомы',
-	'new_album' => 'Создать новый альбом',
-	'no_albums' => 'Нет альбомов',
-	'name_album' => 'Название',
-	'upload_some_photos' => 'Загрузите фотографии',
-	
-	'saved' => 'Сохранено',
-	'about_me' => 'О себе',
-	'whats_up' => 'Как дела',
-	'send' => 'Отправить',
-	'feed' => 'Новости',
-	'remember_me' => 'Запомнить меня',
-	'save' => 'Сохранить',
-	'settings' => 'Настройки',
-	'upload_profile_photo' => 'Загрузить фотографию на профиль',
-	'followers' => "Наблюдатели",
+              			d	
+	'followers' => "Наблюдают",
 	'following_this_people' => "Наблюдает",
 	'unfollow' => "Перестать",
 	'follow' => "Наблюдать",
