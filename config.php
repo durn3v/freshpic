@@ -106,6 +106,7 @@ if(isset($_SESSION['user_id']))
 	<a class=\"top_link\" href=\"mail.php\">{$lang['messages']}<span id=\"messages\">{$new_messages}</span></a>
 	<a class=\"top_link\" href=\"feed.php\">{$lang['feed']}</a>
 	<a class=\"top_link\" href=\"settings.php\">{$lang['settings']}</a>
+	<a class=\"top_link\" href=\"search.php\">{$lang['search']}</a>
 	<a class=\"log_out_link\" href=\"home.php?act=logout\">{$lang['log_out']}</a>
 	</div>";
 } else {

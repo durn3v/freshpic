@@ -18,6 +18,7 @@ $lang = array(
 	'name_album' => 'Название',
 	'upload_some_photos' => 'Загрузите фотографии',
 	
+	'search' => 'Поиск',
 	'saved' => 'Сохранено',
 	'about_me' => 'О себе',
 	'whats_up' => 'Как дела',

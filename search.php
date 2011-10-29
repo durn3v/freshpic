@@ -10,10 +10,10 @@ echo $after_title;
 echo $after_scripts;
 if(isset($_SESSION['user_id']))
 {
-	if(isset($_GET['q']))
+	echo "<form><input type=\"text\" name=\"q\" value=\"{$_GET['q']}\"><input type=\"submit\" value=\"Search\" style=\"margin-left:0;\"></form>";
+	if(isset($_GET['q']) and $qtrim=trim($_GET['q']) and $qtrim!="")
 	{
-		$qlower=strtolower($_GET['q']);
-		$q=explode(" ", $qlower);
+		$q=explode(" ", $qtrim);
 		$db->connect();
 		foreach($q as $value)
 		{
@@ -21,7 +21,7 @@ if(isset($_SESSION['user_id']))
 		}
 		for($i=1;$i<=$max;$i++)
 		{
-			$search=$search." lower(name) LIKE '%{$value}%' OR lower(lastname) LIKE '%{$value}%'";
+			$search=$search." lower(name) LIKE lower('%{$value}%') OR lower(lastname) LIKE lower('%{$value}%')";
 			if($max!=1 and $i!=$max) $search = $search." OR";
 		}
 		$db->action("SELECT * FROM users WHERE {$search};");

@@ -18,6 +18,7 @@ $lang = array(
 	'name_album' => 'Name of album',
 	'upload_some_photos' => 'Upload some photos',
 	
+	'search' => 'Search',
 	'saved' => 'Saved',
 	'about_me' => 'About me',
 	'whats_up' => 'What\'s up',
