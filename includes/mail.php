@@ -26,7 +26,7 @@ function print_messages($user_id, $act="inbox") {
 	}
 	
 	if($act=="outbox") {
-		$result = pg_query("SELECT * FROM messages WHERE from_id={$user_id}") or die(pg_last_error());
+		$result = pg_query("SELECT * FROM messages WHERE from_id={$user_id} ORDER BY uid DESC") or die(pg_last_error());
 		while ($messages = pg_fetch_array($result)) 
 		{
 			if(isset($_GET['page'])) $page=$_GET['page']*10; else $page=10;

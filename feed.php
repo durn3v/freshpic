@@ -18,7 +18,12 @@ echo $after_title;
 echo "<script>var js_title='{$lang['feed']}';</script>";
 echo $after_scripts;
 	$db->connect();
+	echo "<table><tr><td width=\"200\" valign=\"top\">";
+	echo "<a href=\"feed.php\">{$lang['feed']}</a><br>";
+	echo "<a href=\"mail.php\">{$lang['messages']}</a>";
+	echo "</td><td>";
 	get_feed();
+	echo "</td></tr></table>";
 	$db->close();
 echo $close;
 }

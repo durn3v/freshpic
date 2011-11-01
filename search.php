@@ -10,7 +10,7 @@ echo $after_title;
 echo $after_scripts;
 if(isset($_SESSION['user_id']))
 {
-	echo "<form><input type=\"text\" name=\"q\" value=\"{$_GET['q']}\"><input type=\"submit\" value=\"Search\" style=\"margin-left:0;\"></form>";
+	echo "<form><input type=\"text\" name=\"q\" value=\"{$_GET['q']}\"><input type=\"submit\" value=\"{$lang['search']}\" style=\"margin-left:0;\"></form>";
 	if(isset($_GET['q']) and $qtrim=trim($_GET['q']) and $qtrim!="")
 	{
 		$q=explode(" ", $qtrim);

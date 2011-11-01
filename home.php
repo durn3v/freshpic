@@ -24,7 +24,8 @@ if(isset($_POST['email']) && isset($_POST['pass']))
 		$_SESSION['user_id']=$user_id;
 		if($_POST['remember']=="yes")
 		{
-			setcookie("remember", $user_id, time()+3600*24*30, "/");
+			setcookie("user_id", $user_id, time()+3600*24*30, "/");
+			setcookie("user_password", $pass, time()+3600*24*30, "/");
 		}
 		header("Location: home.php");
 		exit();
@@ -33,7 +34,8 @@ if(isset($_POST['email']) && isset($_POST['pass']))
 
 if(isset($_GET['act'])=="logout")
 {
-	SetCookie("remember","");
+	setcookie("user_id","");
+	setcookie("user_password","");
 	unset($_SESSION['user_id']);
 	header("Location: ./");
 }
@@ -79,13 +81,13 @@ function wall()
 		});
 	}
 $('#send').submit(function(){
-		if($('textarea#message').val()!='') 
+		if($('textarea#wallmessage').val()!='') 
 		{
 			$('input[type=submit]', this).attr('disabled', 'disabled');
 			$.ajax({  
 			type: \"POST\",  
 			url: \"/actions/wall/send.php\",  
-			data: \"ajax=wallsend&message=\"+$(\"#message\").val(),  
+			data: \"ajax=wallsend&message=\"+$(\"#wallmessage\").val(),  
 			success: function(html){
 			$(\"#content\").html(html);
 			wall();
@@ -155,7 +157,9 @@ if(isset($_SESSION['user_id']))
 		if($online_time+35>time()) echo " online";
 		echo "</div>";
 		echo "<table style=\"border-bottom:1px solid;\"><tr><td valign=\"top\" width=\"200\">";
-		if($avatar!="nothing") echo "<img src=\"./s/{$_GET['user']}/{$avatar}.jpg\"><br>";
+		echo "<img src=\"";
+		if($avatar!="nothing") echo "./s/{$_GET['user']}/{$avatar}"; else echo "./images/nothing";
+		echo ".jpg\"><br>"; 
 		if($_GET['user']!=$_SESSION['user_id'])
 		{ 
 			echo "<br><a href=\"#send\" onclick=\"$('#message_to').css('display', 'inline');\">{$lang['write_a_message']}</a>";
@@ -202,7 +206,7 @@ if(isset($_SESSION['user_id']))
 		}
 		if($_GET['user']==$_SESSION['user_id'])
 		{
-			echo "{$lang['whats_up']}:<br><form id=\"send\"><textarea id=\"message\" rows=\"2\" cols=\"35\"></textarea><br>
+			echo "{$lang['whats_up']}:<br><form id=\"send\"><textarea id=\"wallmessage\" rows=\"2\" cols=\"35\"></textarea><br>
 			<input type=\"submit\" value=\"{$lang['send']}\" id=\"submit\"></form>";
 		}
 		

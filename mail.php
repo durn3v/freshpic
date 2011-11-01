@@ -1,6 +1,7 @@
 <?php
 session_start();
-include("config.php");
+include_once("config.php");
+include_once("includes/feed.php");
 
 function from_user($from_id) {
 $sql_from="SELECT * FROM users WHERE uid=".$from_id;
@@ -68,7 +69,10 @@ echo $after_scripts;
 
 if(isset($_SESSION['user_id']))
 {
-
+	echo "<table><tr><td width=\"200\" valign=\"top\">";
+	echo "<a href=\"feed.php\">{$lang['feed']}</a><br>";
+	echo "<a href=\"mail.php\">{$lang['messages']}</a>";
+	echo "</td><td>";
 	switch($_GET['act']):
 
 	case "write":
@@ -134,19 +138,15 @@ if(isset($_SESSION['user_id']))
 		break;
 
 	case "outbox":
-		echo "<div class=\"left\">";
-		echo "<a href=\"?\">{$lang['inbox']}</a><br>";
+		echo "<a href=\"?\">{$lang['inbox']}</a> ";
 		echo "<a href=\"?act=write\">{$lang['write_a_message']}</a>";
-		echo "</div>";
-		echo "<div class=\"center\"><div id=\"mail\"></div></div>";
+		echo "<div id=\"mail\"></div>";
 		$db->close();
 		break;
 
 	default:
-		echo "<div class=\"left\">";
-		echo "<a href=\"?act=outbox\">{$lang['outbox']}</a><br>";
+		echo "<a href=\"?act=outbox\">{$lang['outbox']}</a> ";
 		echo "<a href=\"?act=write\">{$lang['write_a_message']}</a>";
-		echo "</div>";
 		
 		$db->connect();
 		if(isset($_GET['delete']))
@@ -154,9 +154,11 @@ if(isset($_SESSION['user_id']))
 		$db->action("DELETE FROM messages WHERE to_id=".$_SESSION['user_id']." AND message_id_to=".$_GET['delete']);
 		header("Location: mail.php");
 		}
-		echo "<div class=\"center\"><div id=\"mail\"></div><div id=\"loader\" style=\"display:none;\"><img src=\"loader.gif\"></div></div>";
+		echo "<div id=\"mail\"></div><div id=\"loader\" style=\"display:none;\"><img src=\"loader.gif\"></div>";
 		$db->close();
 	endswitch;
+	
+	echo "</td></tr></table>";
 
 }
 else

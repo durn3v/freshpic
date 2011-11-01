@@ -1,10 +1,36 @@
 <?php
 
-if(isset($_COOKIE['remember']))
+class db {
+
+function connect() {
+	$this->connect=pg_connect("host=".DB_HOST." dbname=".DB_NAME." user=".DB_USER." password=".DB_PASS);
+	}
+function action($sql) {
+	$this->sql=$sql;
+	$this->result=pg_query($this->sql) or die(pg_last_error());
+	}
+function free() {
+	pg_free_result($this->result);
+	}
+function close() {
+	pg_close($this->connect);
+	}
+}
+
+$db=new db;
+
+if(isset($_COOKIE['user_id']))
 {
 	if(!isset($_SESSION['user_id']))
 	{
-		$_SESSION['user_id']=$_COOKIE['remember'];
+		$db->connect();
+		$db->action("SELECT pass FROM users WHERE uid={$_COOKIE['user_id']};");
+		while($user=pg_fetch_array($db->result)) $password = $user['pass'];
+		if($password==$_COOKIE['user_password'])
+		{
+			$_SESSION['user_id']=$_COOKIE['user_id'];
+		}
+		$db->close();
 	}
 }
 //define $lang with value from cookie or, if cookie does not contain it yet, over geoip	
@@ -54,25 +80,6 @@ define("DB_HOST","localhost");
 define("DB_NAME","freshpic");
 define("DB_USER","freshpic");
 define("DB_PASS","GaopI4");
-
-class db {
-
-function connect() {
-	$this->connect=pg_connect("host=".DB_HOST." dbname=".DB_NAME." user=".DB_USER." password=".DB_PASS);
-	}
-function action($sql) {
-	$this->sql=$sql;
-	$this->result=pg_query($this->sql) or die(pg_last_error());
-	}
-function free() {
-	pg_free_result($this->result);
-	}
-function close() {
-	pg_close($this->connect);
-	}
-}
-
-$db=new db;
 
 function db_connect() {
 	return pg_connect("host=".DB_HOST." dbname=".DB_NAME." user=".DB_USER." password=".DB_PASS);
