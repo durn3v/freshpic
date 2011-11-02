@@ -1,24 +1,16 @@
 <?php
-//ini_set("display_errors","1");
-//ini_set("display_startup_errors","1");
-//ini_set('error_reporting', E_ALL);
+ini_set("display_errors","1");
+ini_set("display_startup_errors","1");
+ini_set('error_reporting', E_ALL);
 
 session_start();
-if(isset($_COOKIE['remember']))
-{
-	if(!isset($_SESSION['user_id']))
-	{
-		$_SESSION['user_id']=$_COOKIE['remember'];
-		header("Location: home.php");
-		exit();
-	}
-}
+include_once("config.php");
+
 if(isset($_SESSION['user_id']))
 {
 	header("Location: home.php");
 	exit();
 }
-include("config.php");
 echo "<html><head><meta http-equiv=\"Content-type\" content=\"test/html; charset=utf-8\"><title>Welcome!</title>";
 echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"css/style.css\" /></head>";
 echo "<div class=\"top\">";

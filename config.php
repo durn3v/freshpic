@@ -1,5 +1,11 @@
 <?php
 
+define("HOST_NAME","freshpic.org");
+define("DB_HOST","localhost");
+define("DB_NAME","freshpic");
+define("DB_USER","freshpic");
+define("DB_PASS","GaopI4");
+
 class db {
 
 function connect() {
@@ -75,11 +81,6 @@ elseif($_GET['lang']=="de")
 
 require_once("languages/".USER_LANGUAGE.".php");
 
-define("HOST_NAME","freshpic.org");
-define("DB_HOST","localhost");
-define("DB_NAME","freshpic");
-define("DB_USER","freshpic");
-define("DB_PASS","GaopI4");
 
 function db_connect() {
 	return pg_connect("host=".DB_HOST." dbname=".DB_NAME." user=".DB_USER." password=".DB_PASS);
