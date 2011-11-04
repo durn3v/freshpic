@@ -1,4 +1,5 @@
 <?php
+include_once("user.php");
 function get_feed() {
 $result=pg_query("SELECT * FROM followers WHERE who={$_SESSION['user_id']}");
 	$i=0;
@@ -23,11 +24,11 @@ $result=pg_query("SELECT * FROM followers WHERE who={$_SESSION['user_id']}");
 			if($feed['type']=='photos') 
 			{
 			$album=album($feed['user_id'],$feed['value2']); 
-			echo "<tr><td><a href=\"{$feed['user_id']}\"><img src=\"i/{$feed['user_id']}/{$user['avatar']}.jpg\"></a></td><td>{$user['name']} {$user['lastname']}<br>added {$feed['value1']} photos to album <a href=\"albums.php?user={$feed['user_id']}&album={$feed['value2']}\">{$album}</a></td></tr>";
+			echo "<tr><td><a href=\"{$feed['user_id']}\">".get_avatar_small($feed['user_id'],$user['avatar'])."</a></td><td>{$user['name']} {$user['lastname']}<br>added {$feed['value1']} photos to album <a href=\"albums.php?user={$feed['user_id']}&album={$feed['value2']}\">{$album}</a></td></tr>";
 			}
 			if($feed['type']=='status') 
 			{
-			echo "<tr><td><a href=\"{$feed['user_id']}\"><img src=\"i/{$feed['user_id']}/{$user['avatar']}.jpg\"></a></td><td><p>{$user['name']} {$user['lastname']}</p>{$feed['value1']}</td></tr>";
+			echo "<tr><td><a href=\"{$feed['user_id']}\">".get_avatar_small($feed['user_id'],$user['avatar'])."</a></td><td><p>{$user['name']} {$user['lastname']}</p>{$feed['value1']}</td></tr>";
 			}
 		}
 	echo "</table>";

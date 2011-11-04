@@ -10,4 +10,16 @@ if(!function_exists("user_array"))
 		}
 	}
 }
+if(!function_exists("get_avatar_small"))
+{
+	function get_avatar_small($uid,$avatar)
+	{
+		if($avatar=="nothing")
+		{
+			return "<img src=\"images/nothing_small.jpg\" style=\"margin-left:1px;\">";
+		} else {
+			return "<img src=\"i/$uid/$avatar.jpg\" style=\"margin-left:1px;\">";
+		}
+	}
+}
 ?>

@@ -1,4 +1,7 @@
 <?php
+//ini_set("display_errors","1");
+//ini_set("display_startup_errors","1");
+//ini_set('error_reporting', E_ALL);
 session_start();
 include_once("config.php");
 include_once("includes/wall.php");
@@ -7,38 +10,6 @@ include_once("includes/mail.php");
 echo $start;
 echo "<title>Home</title>";
 echo $after_title;
-
-if(isset($_POST['email']) && isset($_POST['pass']))
-{
-	$email=$_POST['email'];
-	$pass=md5($_POST['pass']);
-	$db->connect();
-	$db->action("SELECT * FROM users WHERE email='".$email."'");
-	while ($sign = pg_fetch_array($db->result))
-	{
-		$passtwo=$sign['pass'];
-		$user_id=$sign['uid'];
-	}
-	if($pass==$passtwo)
-	{
-		$_SESSION['user_id']=$user_id;
-		if($_POST['remember']=="yes")
-		{
-			setcookie("user_id", $user_id, time()+3600*24*30, "/");
-			setcookie("user_password", $pass, time()+3600*24*30, "/");
-		}
-		header("Location: home.php");
-		exit();
-	}
-}
-
-if(isset($_GET['act'])=="logout")
-{
-	setcookie("user_id","");
-	setcookie("user_password","");
-	unset($_SESSION['user_id']);
-	header("Location: ./");
-}
 
 if(isset($_SESSION['user_id']))
 {
@@ -180,7 +151,7 @@ if(isset($_SESSION['user_id']))
 			$db->action("SELECT * FROM followers WHERE who='".$_GET['user']."'");
 			while($following_user=pg_fetch_array($db->result)) {
 				$user=user_array($following_user['whom']);
-				echo "<a href=\"{$following_user['whom']}\"><img src=\"i/{$following_user['whom']}/{$user['avatar']}\"></a>";
+				echo "<a href=\"{$following_user['whom']}\">".get_avatar_small($following_user['whom'],$user['avatar'])."</a>";
 			}
 		}
 		
@@ -194,7 +165,7 @@ if(isset($_SESSION['user_id']))
 			while($follower=pg_fetch_array($db->result)) 
 			{
 				$user=user_array($follower['who']);
-				echo "<a href=\"{$follower['who']}\"><img src=\"i/{$follower['who']}/{$user['avatar']}\"></a>";
+				echo "<a href=\"{$follower['who']}\">".get_avatar_small($follower['who'],$user['avatar'])."</a>";
 			}
 		}
 		echo "</td>";
@@ -240,7 +211,7 @@ if(isset($_SESSION['user_id']))
 }
 else
 {
-	echo "<form method=\"POST\">
+	echo "<form method=\"POST\" action=\"login.php\">
 		{$lang['email']}: <input type=\"text\" name=\"email\">
 		{$lang['password']}<input type=\"password\" name=\"pass\">
 		<input type=\"submit\" value=\"{$lang['sign_in']}\">
