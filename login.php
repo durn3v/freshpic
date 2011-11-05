@@ -30,9 +30,22 @@ if(isset($_GET['code']))
 	$vk_code=$_GET['code'];
 	$out = my_curl('https://api.vkontakte.ru/oauth/access_token?client_id=2661341&client_secret=THISIS&code='.$vk_code);
 	$json_data=(array)json_decode($out);
-	$_SESSION['vk_access_token']=$json_data['access_token'];
-	$_SESSION['vk_user_id']=$json_data['user_id'];
-	header("Location: vkontakte.php");
+	$db->connect();
+	$db->action("SELECT * FROM vk_users WHERE vk_user_id={$json_data['user_id']}");
+	if(pg_num_rows($db->result)!=0)
+	{
+		while($result=pg_fetch_array($db->result))
+		{
+			$_SESSION['user_id']=$result['user_id'];
+			header("Location: /{$result['user_id']}");
+			exit();
+		}
+	} else {
+		$_SESSION['vk_access_token']=$json_data['access_token'];
+		$_SESSION['vk_user_id']=$json_data['user_id'];
+		header("Location: vkontakte.php");
+	}
+	$db->close();
 }
 
 function my_curl($link) {

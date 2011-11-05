@@ -120,14 +120,14 @@ if(isset($_SESSION['user_id']))
 		<input type=\"submit\" value=\"Send\">
 		</form>";
 		echo "</div>";
-		echo "<div style=\"height:20px; border:1px solid; border-top:none;\">{$name} {$lastname}";
+		echo "<div class=\"main_top\"><!--[if IE]><span id=\"ietop\"><span id=\"ietop\"><![endif]-->{$name} {$lastname}";
 		if($_GET['user']==$_SESSION['user_id'])
 		{ 
 			echo " ({$lang['that_is_you']})";	
 		}
 		if($online_time+35>time()) echo " online";
-		echo "</div>";
-		echo "<table style=\"border-bottom:1px solid;\"><tr><td valign=\"top\" width=\"200\">";
+		echo "<!--[if IE]></span></span><![endif]--></div>";
+		echo "<table class=\"main_table\"><tr><td valign=\"top\" width=\"200\">";
 		echo "<img src=\"";
 		if($avatar!="nothing") echo "./s/{$_GET['user']}/{$avatar}"; else echo "./images/nothing";
 		echo ".jpg\"><br>"; 

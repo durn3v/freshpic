@@ -1,6 +1,37 @@
 body {
 	font-family: Helvetica, Arial;
+	background-color: white;
 	margin:0;
+}
+
+.main_top {
+	display: table-cell;
+    vertical-align: middle;
+	border: 1px solid #ddd;
+	border-top: none;
+	height:30px;
+	width:900px;
+	background-color:#f1f1f1;
+	position: relative;
+}
+
+.main_table {
+	border:1px solid #ccc;
+	border-top: none;
+	padding: 10px;
+}
+
+.main_top #ietop {
+	display: block;
+    position: absolute;
+    top: 50%;
+    left: 0%;
+    width: 100%;
+}
+
+.main_top #ietop #ietop {
+	position: relative;
+    top: -50%;
 }
 
 img { 
@@ -347,10 +378,14 @@ p#flags {
   padding:5px;
 }
 #message_to {
-position:absolute;
-margin:0 auto;
+	position:absolute;
+	margin:0 auto;
 	background-color:white;
 	border: 1px solid;
+	left:50%;
+	right:50%;
+	top:50%;
+	width:200px;
 }
 
 A.message_link:link {color:black; text-decoration:none;}
