@@ -35,17 +35,6 @@ echo $after_title;
 echo "<script type=\"text/javascript\" src=\"jquery.tablednd_0_5.js\"></script>
 <script>
 function view(image) {";
-if(isset($_GET['album']))
-{
-$db->connect();
-		$db->action("SELECT name FROM images WHERE user_id={$_GET['user']} AND album_id={$_GET['album']} AND delete=FALSE ORDER BY seq");
-		$i=0;
-		while($images=pg_fetch_array($db->result))
-		{
-			$image[]=$images['name'];
-			$i++;
-		}
-}
 echo "	$('#vis').css('display','inline');
 	$('#view').css('display','inline');
 	$('#view').html('<a href=\"#!{$_GET['user']}/'+next[image]+'\"><img src=\"./p/'+image+'.jpg\" /></a>');
@@ -209,7 +198,7 @@ if(isset($_GET['user']))
 	if(!isset($_GET['album']))
 	{
 		$db->action("SELECT * FROM albums WHERE user_id={$_GET['user']} AND delete=FALSE ORDER BY seq");
-		echo "<div style=\"height:20px; border:1px solid; border-top:none;\"><a href=\"{$_GET['user']}\">{$user['name']} {$user['lastname']}</a> -> {$lang['albums']}</div>";
+		echo "<div class=\"main_top\"><a href=\"{$_GET['user']}\">{$user['name']} {$user['lastname']}</a> -> {$lang['albums']}</div>";
 		echo "<table id=\"albums\">";
 		if(pg_num_rows($db->result)==0)
 		{
@@ -239,18 +228,32 @@ if(isset($_GET['user']))
 		}
 		echo "</table>";
 	} else {
-		$db->action("SELECT name FROM albums WHERE user_id={$_GET['user']} AND album_id={$_GET['album']};");
-		while($album=pg_fetch_array($db->result)) $name=$album['name'];
-		echo "<div style=\"height:20px; border:1px solid; border-top:none;\"><a href=\"{$_GET['user']}\">{$user['name']} {$user['lastname']}</a> -> <a href=\"albums.php?user={$_GET['user']}\">{$lang['albums']}</a> -> {$name}</div>";
-		//////////////////////////////
-		for($x=0; $x<$i; $x++)
+		$db->action("SELECT name FROM albums WHERE user_id={$_GET['user']} AND album_id={$_GET['album']}");
+		if(pg_num_rows($db->result)!=0)
 		{
-		if($x % 4 === 0 and $x!=0) echo "<br>";
-		if($_GET['user']==$_SESSION['user_id'] and isset($_GET['edit'])) echo "<a href=\"?user={$_SESSION['user_id']}&album={$_GET['album']}&idelete={$image[$x]}\">delete</a>";
+			$album_exist=
+			$db->action("SELECT name FROM images WHERE user_id={$_GET['user']} AND album_id={$_GET['album']} AND delete=FALSE ORDER BY seq");
+			$i=0;
+			while($images=pg_fetch_array($db->result))
+			{
+				$image[]=$images['name'];
+				$i++;
+			}
+			$db->action("SELECT name FROM albums WHERE user_id={$_GET['user']} AND album_id={$_GET['album']};");
+			while($album=pg_fetch_array($db->result)) $name=$album['name'];
+			echo "<div class=\"main_top\"><a href=\"{$_GET['user']}\">{$user['name']} {$user['lastname']}</a> -> <a href=\"albums.php?user={$_GET['user']}\">{$lang['albums']}</a> -> {$name}</div>";
+			//////////////////////////////
+			for($x=0; $x<$i; $x++)
+			{
+			if($x % 4 === 0 and $x!=0) echo "<br>";
+			if($_GET['user']==$_SESSION['user_id'] and isset($_GET['edit'])) echo "<a href=\"?user={$_SESSION['user_id']}&album={$_GET['album']}&idelete={$image[$x]}\">delete</a>";
 			echo "<a href=\"#!{$image[$x]}\" onclick=\"if(navigator.userAgent.toLowerCase().indexOf('firefox/3.5')!=-1) view2('{$image[$x]}')\"><img src=\"./i/{$_GET['user']}/{$image[$x]}.jpg\"></a>";
-		}
+			}
 		
-		echo "<div id=\"view\"></div>";
+			echo "<div id=\"view\"></div>";
+		} else {
+			echo "ALBUM DOES NOT EXIST";
+		}
 	}
 	
 	$db->close();
