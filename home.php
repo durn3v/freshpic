@@ -148,10 +148,9 @@ if(isset($_SESSION['user_id']))
 		{
 			echo "<br>".$lang['following_this_people'];
 			echo " ".$following['following']. " :<br>";
-			$db->action("SELECT * FROM followers WHERE who='".$_GET['user']."'");
+			$db->action("SELECT whom FROM followers WHERE who='".$_GET['user']."'");
 			while($following_user=pg_fetch_array($db->result)) {
-				$user=user_array($following_user['whom']);
-				echo "<a href=\"{$following_user['whom']}\">".get_avatar_small($following_user['whom'],$user['avatar'])."</a>";
+				echo "<a href=\"{$following_user['whom']}\">".get_avatar_small($following_user['whom'])."</a>";
 			}
 		}
 		
@@ -161,11 +160,10 @@ if(isset($_SESSION['user_id']))
 		{
 			echo "<br>".$lang['followers'];
 			echo " ".$followers['followers']. " :<br>";
-			$db->action("SELECT * FROM followers WHERE whom='".$_GET['user']."'");
+			$db->action("SELECT who FROM followers WHERE whom='".$_GET['user']."'");
 			while($follower=pg_fetch_array($db->result)) 
 			{
-				$user=user_array($follower['who']);
-				echo "<a href=\"{$follower['who']}\">".get_avatar_small($follower['who'],$user['avatar'])."</a>";
+				echo "<a href=\"{$follower['who']}\">".get_avatar_small($follower['who'])."</a>";
 			}
 		}
 		echo "</td>";

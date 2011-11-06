@@ -15,7 +15,7 @@ function print_messages($user_id, $act="inbox") {
 			echo "<a href=\"?act=show&id=".$message_id."\" class=\"message_link\">";
 			echo "<div class=\"{$message_style}\">";
 			echo "<table><tr><td width=\"50\">";
-			if($user['avatar']!="nothing") echo "<img src=\"./i/{$messages['from_id']}/{$user['avatar']}\">";
+			echo get_avatar_small($messages['from_id']);
 			echo "</td><td>{$user['name']} {$user['lastname']}<br>{$messages['message']}</td></tr></table>";
 			//echo "<a href=\"?delete={$message_id};\">{$lang['delete']}</a>";
 			echo "</div>";
@@ -36,7 +36,7 @@ function print_messages($user_id, $act="inbox") {
 				echo "<a href=\"?act=show&id=".$messages['message_id_from']."&out\">";
 				echo "<div class=\"message\">";
 				echo "<table><tr><td width=\"50\">";
-				if($user['avatar']!="nothing") echo "<img src=\"./i/{$messages['to_id']}/{$user['avatar']}\">";
+				echo get_avatar_small($messages['to_id']);
 				echo "</td><td>{$user['name']} {$user['lastname']}<br>{$messages['message']}</td></tr></table>";
 				echo "</div></a>";
 			}

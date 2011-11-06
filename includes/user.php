@@ -12,8 +12,13 @@ if(!function_exists("user_array"))
 }
 if(!function_exists("get_avatar_small"))
 {
-	function get_avatar_small($uid,$avatar)
+	function get_avatar_small($uid)
 	{
+		$result=pg_query("SELECT avatar FROM users WHERE uid={$uid}") or die(pg_last_error());
+		while($user=pg_fetch_array($result))
+		{
+			$avatar=$user['avatar'];
+		}
 		if($avatar=="nothing")
 		{
 			return "<img src=\"images/nothing_small.jpg\" style=\"margin-left:1px;\">";

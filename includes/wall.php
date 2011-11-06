@@ -11,7 +11,7 @@ function print_wall($user_id) {
 				if($i==0){
 				 	$wall['message']="<b>{$wall['message']}</b>";
 				}
-				echo "<tr id=\"wall_message\"><td><img src=\"i/{$user_id}/{$user['avatar']}.jpg\"></td><td>{$b}{$wall['message']}</td></tr>";
+				echo "<tr id=\"wall_message\"><td>".get_avatar_small($user_id)."</td><td>{$b}{$wall['message']}</td></tr>";
 				$i++;
 			}
 		}

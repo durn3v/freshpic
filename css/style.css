@@ -34,6 +34,15 @@ body {
     top: -50%;
 }
 
+.album_photo {
+	width:100px;
+	height:100px;
+	background:none;
+	cursor: pointer;
+	text-align:center;
+	border:1px solid #f0f0f0;
+}
+
 img { 
 	border: none;
 }

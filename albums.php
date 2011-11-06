@@ -243,14 +243,15 @@ if(isset($_GET['user']))
 			while($album=pg_fetch_array($db->result)) $name=$album['name'];
 			echo "<div class=\"main_top\"><a href=\"{$_GET['user']}\">{$user['name']} {$user['lastname']}</a> -> <a href=\"albums.php?user={$_GET['user']}\">{$lang['albums']}</a> -> {$name}</div>";
 			//////////////////////////////
+			echo "<table><tr>";
 			for($x=0; $x<$i; $x++)
 			{
-			if($x % 4 === 0 and $x!=0) echo "<br>";
 			if($_GET['user']==$_SESSION['user_id'] and isset($_GET['edit'])) echo "<a href=\"?user={$_SESSION['user_id']}&album={$_GET['album']}&idelete={$image[$x]}\">delete</a>";
-			echo "<a href=\"#!{$image[$x]}\" onclick=\"if(navigator.userAgent.toLowerCase().indexOf('firefox/3.5')!=-1) view2('{$image[$x]}')\"><img src=\"./i/{$_GET['user']}/{$image[$x]}.jpg\"></a>";
+			echo "<td class=\"album_photo\" onclick=\"location.href='#!{$image[$x]}';\"><a href=\"#!{$image[$x]}\" onclick=\"if(navigator.userAgent.toLowerCase().indexOf('firefox/3.5')!=-1) view2('{$image[$x]}')\"><img src=\"./i/{$_GET['user']}/{$image[$x]}.jpg\"></a></td>";
+			if($x % 4 === 0 and $x!=0) echo "</tr><tr>";
 			}
 		
-			echo "<div id=\"view\"></div>";
+			echo "</tr></table><div id=\"view\"></div>";
 		} else {
 			echo "ALBUM DOES NOT EXIST";
 		}
@@ -268,12 +269,13 @@ if(isset($_GET['user']))
 		{
 		$z++;
 		}
+		echo "<table><form action=\"albums.php\" method=\"POST\">";
 		for($i=0; $i<=$z; $i++)
 		{
-		$file = $_FILES['pic']['tmp_name'][$i];
-		$type = $_FILES['pic']['type'][$i];
-		if(is_uploaded_file($file))
-		{
+			$file = $_FILES['pic']['tmp_name'][$i];
+			$type = $_FILES['pic']['type'][$i];
+			if(is_uploaded_file($file))
+			{
 				$seq=$i+1;
 				$db->action("SELECT images FROM counts WHERE user_id={$_SESSION['user_id']}");
 				while($images=pg_fetch_array($db->result)) $uid=$images['images']+1;
@@ -285,10 +287,12 @@ if(isset($_GET['user']))
 				imageresize("./i/{$_SESSION['user_id']}/{$name}.jpg","./p/{$_SESSION['user_id']}/{$name}.jpg",100,100,90, $type);
 				imageresize("./s/{$_SESSION['user_id']}/{$name}.jpg","./p/{$_SESSION['user_id']}/{$name}.jpg",800,600,90, $type);
 				//list($width, $height, $type) = getimagesize("./s/{$name}");
-				echo "<img src=\"./i/{$_SESSION['user_id']}/{$name}.jpg\">";
+				echo "<tr><td><img src=\"./i/{$_SESSION['user_id']}/{$name}.jpg\"></td><td><textarea name=\"description{$name}\"></textarea></td></tr>";
 				$count++;
+			}
 		}
-		}
+		echo "<tr><td colspan=\"2\"><input type=\"submit\" value=\"{$lang['save']}\"></td></tr>
+				<input type=\"hidden\" name=\"act\" value=\"edit\"></form></table>";
 		$db->action("UPDATE albums SET count=count+{$count} WHERE user_id={$_SESSION['user_id']} AND album_id={$_POST['album_id']}");
 		$db->action("INSERT INTO feed (user_id,type,value1,value2) VALUES ({$_SESSION['user_id']}, 'photos', '{$count}', '{$_POST['album_id']}');");
 		$db->close();
