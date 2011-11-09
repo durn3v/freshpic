@@ -5,21 +5,53 @@ define("DB_HOST","localhost");
 define("DB_NAME","freshpic");
 define("DB_USER","freshpic");
 define("DB_PASS","GaopI4");
+if(user::on()) define("USER_ID",$_SESSION['user_id']);
+if(isset($_GET['user'])) define("THIS_USER",$_GET['user']);
 
 class db {
 
-function connect() {
-	$this->connect=pg_connect("host=".DB_HOST." dbname=".DB_NAME." user=".DB_USER." password=".DB_PASS);
+	function connect() {
+		$this->connect=pg_connect("host=".DB_HOST." dbname=".DB_NAME." user=".DB_USER." password=".DB_PASS);
 	}
-function action($sql) {
-	$this->sql=$sql;
-	$this->result=pg_query($this->sql) or die(pg_last_error());
+	function action($sql) {
+		$this->sql=$sql;
+		$this->result=pg_query($this->sql) or die(pg_last_error());
 	}
-function free() {
-	pg_free_result($this->result);
+	function free() {
+		pg_free_result($this->result);
 	}
-function close() {
-	pg_close($this->connect);
+	function close() {
+		pg_close($this->connect);
+	}
+}
+
+class user {
+	public function on()
+	{
+		if(isset($_SESSION['user_id']))
+		{
+			return TRUE;
+		} else {
+			return FALSE;
+		}
+	}
+	public function get()
+	{
+		if(isset($_GET['user']))
+		{
+			return TRUE;
+		} else {
+			return FALSE;
+		}
+	}
+	public function page()
+	{
+		if($_SESSION['user_id']==$_GET['user'])
+		{
+			return TRUE;
+		} else {
+			return FALSE;
+		}
 	}
 }
 

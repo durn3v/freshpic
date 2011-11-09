@@ -11,27 +11,27 @@ echo $start;
 echo "<title>Home</title>";
 echo $after_title;
 
-if(isset($_SESSION['user_id']))
+if(user::on())
 {
-	if(!isset($_GET['user'])) { header("Location: /".$_SESSION['user_id']);}
+	if(!user::get()) { header("Location: /".USER_ID);}
 
 	if(isset($_GET['user']) && isset($_GET['follow'])){
 		$db->connect();
 		$db->action("SELECT * FROM followers WHERE who='".$_SESSION['user_id']."' AND whom='".$_GET['user']."'");
 		if(pg_num_rows($db->result)==0){
-		$db->action("INSERT INTO followers (who,whom) VALUES (".$_SESSION['user_id'].",".$_GET['user'].")");
-		$db->action("UPDATE counts SET following=following+1 WHERE user_id=".$_SESSION['user_id']);
-		$db->action("UPDATE counts SET followers=followers+1 WHERE user_id=".$_GET['user']);
+		$db->action("INSERT INTO followers (who,whom) VALUES (".USER_ID.",".THIS_USER.")");
+		$db->action("UPDATE counts SET following=following+1 WHERE user_id=".USER_ID);
+		$db->action("UPDATE counts SET followers=followers+1 WHERE user_id=".THIS_USER);
 		}
 		$db->close();
 		header("Location: /{$_GET['user']}");
 		exit();
 	}
-	if(isset($_GET['user']) && isset($_GET['unfollow'])){
+	if(user::get() && isset($_GET['unfollow'])){
 		$db->connect();
-		$db->action("DELETE FROM followers WHERE who='".$_SESSION['user_id']."' AND whom='".$_GET['user']."'");
-		$db->action("UPDATE counts SET following=following-1 WHERE user_id=".$_SESSION['user_id']);
-		$db->action("UPDATE counts SET followers=followers-1 WHERE user_id=".$_GET['user']);	
+		$db->action("DELETE FROM followers WHERE who='".USER_ID."' AND whom='".THIS_USER."'");
+		$db->action("UPDATE counts SET following=following-1 WHERE user_id=".USER_ID);
+		$db->action("UPDATE counts SET followers=followers-1 WHERE user_id=".THIS_USER);	
 		$db->close();
 		header("Location: /{$_GET['user']}");
 		exit();
@@ -85,12 +85,12 @@ $('#send_message').submit(function(){
             });</script>";
 echo $after_scripts;
 
-if(isset($_SESSION['user_id']))
+if(user::on())
 {
-	if(is_numeric($_GET['user']))
+	if(is_numeric(THIS_USER))
 	{
 		$db->connect();
-		$db->action("SELECT * FROM users WHERE uid='".$_GET['user']."'");
+		$db->action("SELECT * FROM users WHERE uid='".THIS_USER."'");
 		if(pg_num_rows($db->result)==0) {
 			$user_shows=FALSE;
 		} else {
@@ -121,7 +121,7 @@ if(isset($_SESSION['user_id']))
 		</form>";
 		echo "</div>";
 		echo "<div class=\"main_top\"><!--[if IE]><span id=\"ietop\"><span id=\"ietop\"><![endif]-->{$name} {$lastname}";
-		if($_GET['user']==$_SESSION['user_id'])
+		if(user::page())
 		{ 
 			echo " ({$lang['that_is_you']})";	
 		}
@@ -131,10 +131,10 @@ if(isset($_SESSION['user_id']))
 		echo "<img src=\"";
 		if($avatar!="nothing") echo "./s/{$_GET['user']}/{$avatar}"; else echo "./images/nothing";
 		echo ".jpg\"><br>"; 
-		if($_GET['user']!=$_SESSION['user_id'])
+		if(!user::page())
 		{ 
 			echo "<br><a href=\"#send\" onclick=\"$('#message_to').css('display', 'inline');\">{$lang['write_a_message']}</a>";
-			$db->action("SELECT * FROM followers WHERE who='".$_SESSION['user_id']."' AND whom='".$_GET['user']."'");
+			$db->action("SELECT * FROM followers WHERE who='".USER_ID."' AND whom='".THIS_USER."'");
 			echo "<br>";
 			if(pg_num_rows($db->result)==0) {
 				echo "<a href=\"{$_GET['user']}&follow\">{$lang['follow']}</a>";
@@ -142,25 +142,25 @@ if(isset($_SESSION['user_id']))
 				echo $lang['following']." | <a href=\"{$_GET['user']}&unfollow\">{$lang['unfollow']}</a>";	
 				}
 		}
-		$db->action("SELECT following FROM counts WHERE user_id=".$_GET['user']);
+		$db->action("SELECT following FROM counts WHERE user_id=".THIS_USER);
 		$following=pg_fetch_array($db->result);
 		if($following['following']>0) 
 		{
 			echo "<br>".$lang['following_this_people'];
 			echo " ".$following['following']. " :<br>";
-			$db->action("SELECT whom FROM followers WHERE who='".$_GET['user']."'");
+			$db->action("SELECT whom FROM followers WHERE who='".THIS_USER."'");
 			while($following_user=pg_fetch_array($db->result)) {
 				echo "<a href=\"{$following_user['whom']}\">".get_avatar_small($following_user['whom'])."</a>";
 			}
 		}
 		
-		$db->action("SELECT followers FROM counts WHERE user_id=".$_GET['user']);
+		$db->action("SELECT followers FROM counts WHERE user_id=".THIS_USER);
 		$followers=pg_fetch_array($db->result);
 		if($followers['followers']>0) 
 		{
 			echo "<br>".$lang['followers'];
 			echo " ".$followers['followers']. " :<br>";
-			$db->action("SELECT who FROM followers WHERE whom='".$_GET['user']."'");
+			$db->action("SELECT who FROM followers WHERE whom='".THIS_USER."'");
 			while($follower=pg_fetch_array($db->result)) 
 			{
 				echo "<a href=\"{$follower['who']}\">".get_avatar_small($follower['who'])."</a>";
@@ -173,7 +173,7 @@ if(isset($_SESSION['user_id']))
 		{
 			echo "{$lang['about_me']}: {$about}<br>";
 		}
-		if($_GET['user']==$_SESSION['user_id'])
+		if(user::page())
 		{
 			echo "{$lang['whats_up']}:<br><form id=\"send\"><textarea id=\"wallmessage\" rows=\"2\" cols=\"35\"></textarea><br>
 			<input type=\"submit\" value=\"{$lang['send']}\" id=\"submit\"></form>";
@@ -181,7 +181,7 @@ if(isset($_SESSION['user_id']))
 		
 		echo "<table id=\"wall\">";
 		
-		print_wall($_GET['user']);
+		print_wall(THIS_USER);
 		
 		echo "</table>";
 		echo "</td>";

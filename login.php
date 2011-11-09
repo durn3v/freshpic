@@ -20,9 +20,9 @@ if(isset($_POST['email']) && isset($_POST['pass']))
 			setcookie("user_id", $user_id, time()+3600*24*30, "/");
 			setcookie("user_password", $pass, time()+3600*24*30, "/");
 		}
-		header("Location: home.php");
-		exit();
 	}
+	header("Location: home.php");
+	exit();
 }
 
 if(isset($_GET['code']))
