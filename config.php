@@ -4,7 +4,7 @@ define("HOST_NAME","freshpic.org");
 define("DB_HOST","localhost");
 define("DB_NAME","freshpic");
 define("DB_USER","freshpic");
-define("DB_PASS","GaopI4");
+define("DB_PASS","*******");
 if(user::on()) define("USER_ID",$_SESSION['user_id']);
 if(isset($_GET['user'])) define("THIS_USER",$_GET['user']);
 
